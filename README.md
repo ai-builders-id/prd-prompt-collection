@@ -11,9 +11,11 @@ These prompts act as **repeatable, high-signal specifications** — describing l
 | Domain | File |
 |---|---|
 | Accounting | `PRD - Accounting.md` |
+| AI Chatbot | `PRD - AI Chatbot.md` |
 | Business Intelligence | `PRD - Business Intelligence.md` |
 | Content Management System | `PRD - Content Management System.md` |
 | CRM | `PRD - CRM.md` |
+| CV Extractor | `PRD - CV Extractor.md` |
 | Customer Support & Helpdesk | `PRD - Customer Support & Helpdesk.md` |
 | Document Management System | `PRD - Document Management System.md` |
 | E-Commerce | `PRD - E-Commerce.md` |
