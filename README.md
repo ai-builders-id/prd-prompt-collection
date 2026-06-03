@@ -22,12 +22,17 @@ These prompts act as **repeatable, high-signal specifications** — describing l
 | Enterprise Asset Management | `PRD - Enterprise Asset Management.md` |
 | ERP | `PRD - ERP.md` |
 | GRC | `PRD - GRC.md` |
+| Healthcare EMR | `PRD - Healthcare EMR.md` |
 | HRM | `PRD - HRM.md` |
+| Learning Management System | `PRD - Learning Management System.md` |
 | Personal Finance Tracker | `PRD - Personal Finance Tracker.md` |
 | Point of Sales | `PRD - Point of Sales.md` |
 | Procurement | `PRD - Procurement.md` |
 | Project Management & Collaboration | `PRD - Project Management & Collab.md` |
+| Real Estate Management | `PRD - Real Estate Management.md` |
+| Social Media Analytics | `PRD - Social Media Analytics.md` |
 | Supply Chain Management | `PRD - Supply Chain Management.md` |
+| Vehicle Fleet Management | `PRD - Vehicle Fleet Management.md` |
 
 ## Template
 
