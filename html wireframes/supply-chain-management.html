@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Chain Management - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f0fdfa; color:#0c4a3a; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#0e7490; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#164e63; color:white; display:flex; flex-direction:column; padding:12px; }
+  .sidebar-stats { background:rgba(255,255,255,.08); border-radius:8px; padding:10px 12px; margin-bottom:12px; }
+  .ss-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .ss-label { color:rgba(255,255,255,.55); }
+  .ss-val { font-weight:700; }
+  .wh-selector { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:8px; padding:8px 10px; font-size:12px; color:white; width:100%; margin-bottom:12px; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.2); color:white; font-weight:600; }
+  .nav-badge { margin-left:auto; background:#f59e0b; color:#1c1917; font-size:10px; padding:1px 5px; border-radius:999px; min-width:16px; text-align:center; font-weight:700; }
+  .cat-tree { margin-top:8px; }
+  .cat-title { font-size:10px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; padding:6px 12px; }
+  .cat-item { display:flex; align-items:center; justify-content:space-between; padding:5px 12px; font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; }
+  .cat-item:hover { color:white; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #ccfbf1; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .tab-bar { display:flex; gap:0; background:#f0fdfa; border-radius:8px; overflow:hidden; }
+  .tab { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#0e7490; }
+  .tab.active { background:#0e7490; color:white; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#0e7490; color:white; }
+  .btn-secondary { background:white; border:1px solid #ccfbf1; color:#0c4a3a; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .main-content { flex:1; overflow-y:auto; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:16px 20px 0; }
+  .stat-card { background:white; border:1px solid #ccfbf1; border-radius:10px; padding:14px; border-left:3px solid; }
+  .stat-val { font-size:22px; font-weight:700; }
+  .stat-label { font-size:11px; color:#64748b; margin-top:2px; }
+  .list-section { padding:14px 20px; }
+  table { width:100%; border-collapse:collapse; background:white; border:1px solid #ccfbf1; border-radius:10px; overflow:hidden; }
+  th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; background:#f0fdfa; border-bottom:1px solid #ccfbf1; }
+  td { padding:12px 14px; border-bottom:1px solid #f0fdfa; font-size:13px; vertical-align:middle; }
+  tr:hover td { background:#f0fdfa; cursor:pointer; }
+  tr.selected td { background:#ccfbf1; }
+  .stock-ok { color:#059669; font-weight:600; }
+  .stock-low { color:#d97706; font-weight:600; }
+  .stock-critical { color:#dc2626; font-weight:600; }
+  .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .b-high { background:#d1fae5; color:#059669; }
+  .b-low { background:#fef3c7; color:#d97706; }
+  .b-critical { background:#fee2e2; color:#dc2626; }
+  /* Warehouse grid */
+  .wh-grid-card { background:white; border:1px solid #ccfbf1; border-radius:10px; padding:16px; margin-bottom:14px; }
+  .wh-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .wh-meta { font-size:12px; color:#64748b; margin-bottom:12px; }
+  .cap-bar-bg { height:8px; background:#f0fdfa; border-radius:999px; overflow:hidden; margin-bottom:4px; }
+  .cap-bar-fill { height:100%; border-radius:999px; }
+  .wh-bins { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
+  .bin-cell { background:#f0fdfa; border:1px solid #ccfbf1; border-radius:6px; padding:6px 4px; text-align:center; font-size:10px; cursor:pointer; }
+  .bin-cell:hover { border-color:#0e7490; }
+  .bin-code { font-weight:700; color:#0e7490; font-size:11px; }
+  .bin-item { color:#64748b; font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bin-cell.occupied { background:#d1fae5; border-color:#86efac; }
+  .bin-cell.empty { background:#f8fafc; border-color:#e2e8f0; }
+  /* Movement timeline */
+  .movement-card { background:white; border:1px solid #ccfbf1; border-radius:10px; overflow:hidden; margin-bottom:14px; }
+  .mc-header { padding:12px 16px; border-bottom:1px solid #f0fdfa; font-size:14px; font-weight:700; }
+  .mt-item { display:flex; gap:12px; padding:12px 16px; border-bottom:1px solid #f0fdfa; align-items:center; }
+  .mt-icon { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .mt-inbound { background:#d1fae5; }
+  .mt-outbound { background:#fee2e2; }
+  .mt-transfer { background:#dbeafe; }
+  .mt-adjust { background:#fef3c7; }
+  .mt-content { flex:1; }
+  .mt-title { font-size:13px; font-weight:600; }
+  .mt-meta { font-size:11px; color:#64748b; margin-top:2px; }
+  .mt-qty { font-size:14px; font-weight:700; text-align:right; }
+  .mt-qty.in { color:#059669; }
+  .mt-qty.out { color:#dc2626; }
+  .mt-qty.neutral { color:#2563eb; }
+  /* Right panel */
+  .right-panel { width:300px; background:white; border-left:1px solid #ccfbf1; overflow-y:auto; }
+  .rp-section { padding:14px 16px; border-bottom:1px solid #f0fdfa; }
+  .rp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .info-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+  .info-label { color:#94a3b8; }
+  .info-value { color:#0c4a3a; font-weight:500; }
+  .stock-level-bar { margin-bottom:8px; }
+  .slb-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px; }
+  .slb-bg { height:8px; background:#f0fdfa; border-radius:999px; overflow:hidden; }
+  .slb-fill { height:100%; border-radius:999px; }
+  .reorder-alert { background:#fef3c7; border:1px solid #fde68a; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+  .ra-title { font-size:12px; font-weight:700; color:#d97706; margin-bottom:4px; }
+  .ra-text { font-size:12px; color:#92400e; }
+  .rp-actions { padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
+  .rp-action-btn { border:none; border-radius:8px; padding:9px; font-size:13px; font-weight:600; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>📦 Supply Chain Management</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="search" placeholder="🔍 Cari item, SKU, supplier..." style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:white;font-size:13px;width:220px;">
+    <span style="font-size:12px;opacity:.8;">2 Gudang · 1.250 Item · 8 Low Stock</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-stats">
+      <div class="ss-row"><span class="ss-label">Total SKU</span><span class="ss-val">1.250</span></div>
+      <div class="ss-row"><span class="ss-label">Low Stock</span><span class="ss-val" style="color:#fbbf24;">8</span></div>
+      <div class="ss-row"><span class="ss-label">Inbound PO</span><span class="ss-val" style="color:#34d399;">3</span></div>
+    </div>
+    <select class="wh-selector"><option>🏭 Semua Gudang</option><option>WH-01 Jakarta</option><option>WH-02 Surabaya</option></select>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">📦 Inventory</div>
+    <div class="nav-item">🏭 Gudang</div>
+    <div class="nav-item">📋 Pesanan <span class="nav-badge">3</span></div>
+    <div class="nav-item">🚚 Supplier</div>
+    <div class="nav-item">🚢 Shipments</div>
+    <div class="nav-item">📈 Laporan</div>
+    <div class="cat-tree">
+      <div class="cat-title">Kategori</div>
+      <div class="cat-item">💻 Electronics <span style="font-size:10px;color:rgba(255,255,255,.4);">245</span></div>
+      <div class="cat-item">🖥️ Aksesoris <span style="font-size:10px;color:rgba(255,255,255,.4);">380</span></div>
+      <div class="cat-item">🪑 Furniture <span style="font-size:10px;color:rgba(255,255,255,.4);">125</span></div>
+      <div class="cat-item">📦 Lainnya <span style="font-size:10px;color:rgba(255,255,255,.4);">500</span></div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Inventory</h2>
+        <div class="tab-bar">
+          <button class="tab active">Semua Item</button>
+          <button class="tab">Stok Rendah (8)</button>
+          <button class="tab">Pergerakan</button>
+          <button class="tab">Gudang</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary">Ekspor</button>
+        <button class="btn btn-primary">＋ Penyesuaian Stok</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="main-content">
+        <div class="stats-row">
+          <div class="stat-card" style="border-left-color:#059669;"><div class="stat-val" style="color:#059669;">1.242</div><div class="stat-label">Item Tersedia</div></div>
+          <div class="stat-card" style="border-left-color:#d97706;"><div class="stat-val" style="color:#d97706;">8</div><div class="stat-label">Stok Menipis</div></div>
+          <div class="stat-card" style="border-left-color:#dc2626;"><div class="stat-val" style="color:#dc2626;">3</div><div class="stat-label">Stok Kritis</div></div>
+          <div class="stat-card" style="border-left-color:#0e7490;"><div class="stat-val">75%</div><div class="stat-label">Utilisasi Gudang WH-01</div></div>
+        </div>
+        <div class="list-section">
+          <table>
+            <thead>
+              <tr><th>SKU</th><th>Nama Item</th><th>Kategori</th><th>Gudang</th><th>Stok</th><th>Reserved</th><th>Tersedia</th><th>Status</th><th>Min Stock</th></tr>
+            </thead>
+            <tbody>
+              <tr class="selected">
+                <td><code style="font-size:11px;">ITM-001</code></td>
+                <td style="font-weight:600;">Laptop Pro 15 inch</td>
+                <td>Electronics</td>
+                <td>WH-01</td>
+                <td class="stock-ok">25</td>
+                <td>3</td>
+                <td class="stock-ok">22</td>
+                <td><span class="badge b-high">🟢 OK</span></td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">ITM-002</code></td>
+                <td style="font-weight:600;">Monitor 27" 4K UHD</td>
+                <td>Electronics</td>
+                <td>WH-01</td>
+                <td class="stock-ok">12</td>
+                <td>2</td>
+                <td class="stock-ok">10</td>
+                <td><span class="badge b-high">🟢 OK</span></td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">ITM-003</code></td>
+                <td style="font-weight:600;">Mechanical Keyboard RGB</td>
+                <td>Aksesoris</td>
+                <td>WH-01</td>
+                <td class="stock-low">3</td>
+                <td>1</td>
+                <td class="stock-low">2</td>
+                <td><span class="badge b-low">🟡 Low</span></td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">ITM-004</code></td>
+                <td style="font-weight:600;">Wireless Mouse Logitech</td>
+                <td>Aksesoris</td>
+                <td>WH-02</td>
+                <td class="stock-critical">1</td>
+                <td>1</td>
+                <td class="stock-critical">0</td>
+                <td><span class="badge b-critical">🔴 Kritis</span></td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">ITM-005</code></td>
+                <td style="font-weight:600;">USB-C Hub 7-in-1</td>
+                <td>Aksesoris</td>
+                <td>WH-01</td>
+                <td class="stock-ok">45</td>
+                <td>5</td>
+                <td class="stock-ok">40</td>
+                <td><span class="badge b-high">🟢 OK</span></td>
+                <td>15</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Warehouse layout -->
+          <div class="wh-grid-card" style="margin-top:14px;">
+            <div class="wh-title">🏭 Gudang Jakarta (WH-01) — Layout</div>
+            <div class="wh-meta">Kapasitas: 10.000 m² · Terpakai: 7.500 m² (75%)</div>
+            <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:75%;background:#0e7490;"></div></div>
+            <div style="font-size:11px;color:#64748b;margin-bottom:12px;">75% terisi · 2.500 m² tersedia</div>
+            <div class="wh-bins">
+              <div class="bin-cell occupied"><div class="bin-code">A-01</div><div class="bin-item">Laptop 25</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">A-02</div><div class="bin-item">Monitor 12</div></div>
+              <div class="bin-cell empty"><div class="bin-code">A-03</div><div class="bin-item">—</div></div>
+              <div class="bin-cell empty"><div class="bin-code">A-04</div><div class="bin-item">—</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">A-05</div><div class="bin-item">USB Hub 45</div></div>
+              <div class="bin-cell empty"><div class="bin-code">A-06</div><div class="bin-item">—</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">B-01</div><div class="bin-item">Keyboard 3</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">B-02</div><div class="bin-item">Mouse 1</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">B-03</div><div class="bin-item">Headset 28</div></div>
+              <div class="bin-cell empty"><div class="bin-code">B-04</div><div class="bin-item">—</div></div>
+              <div class="bin-cell occupied"><div class="bin-code">B-05</div><div class="bin-item">Webcam 15</div></div>
+              <div class="bin-cell empty"><div class="bin-code">B-06</div><div class="bin-item">—</div></div>
+            </div>
+            <div style="display:flex;gap:10px;font-size:11px;margin-top:8px;">
+              <span><span style="background:#d1fae5;border-radius:2px;padding:1px 4px;font-size:9px;margin-right:4px;">■</span>Terisi</span>
+              <span><span style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:2px;padding:1px 4px;font-size:9px;margin-right:4px;">■</span>Kosong</span>
+            </div>
+          </div>
+          <!-- Movement timeline -->
+          <div class="movement-card">
+            <div class="mc-header">📊 Pergerakan Stok — Laptop Pro 15 (ITM-001)</div>
+            <div class="mt-item">
+              <div class="mt-icon mt-inbound">📥</div>
+              <div class="mt-content">
+                <div class="mt-title">Inbound — PO-2025-001</div>
+                <div class="mt-meta">WH-01 · Bin A-01 · Admin · 10 Jan 2025</div>
+              </div>
+              <div class="mt-qty in">+20 pcs</div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-icon mt-outbound">📤</div>
+              <div class="mt-content">
+                <div class="mt-title">Outbound — SO-2025-001</div>
+                <div class="mt-meta">WH-01 → Pelanggan · Admin · 12 Jan 2025</div>
+              </div>
+              <div class="mt-qty out">-2 pcs</div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-icon mt-transfer">🔄</div>
+              <div class="mt-content">
+                <div class="mt-title">Transfer — WH-01 → WH-02</div>
+                <div class="mt-meta">Perpindahan stok · Admin · 14 Jan 2025</div>
+              </div>
+              <div class="mt-qty neutral">-5 pcs</div>
+            </div>
+            <div class="mt-item">
+              <div class="mt-icon mt-adjust">⚠️</div>
+              <div class="mt-content">
+                <div class="mt-title">Penyesuaian — Rusak/Hilang</div>
+                <div class="mt-meta">Stock opname · Admin · 15 Jan 2025</div>
+              </div>
+              <div class="mt-qty out">-1 pcs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="rp-section">
+          <div class="rp-section-title">Detail Item — ITM-001</div>
+          <div style="font-size:15px;font-weight:700;color:#0c4a3a;margin-bottom:4px;">Laptop Pro 15 inch</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px;">Laptop 15 inch 16GB RAM · Electronics</div>
+          <div class="info-row"><span class="info-label">SKU</span><span class="info-value" style="font-family:monospace;">ITM-001</span></div>
+          <div class="info-row"><span class="info-label">Satuan</span><span class="info-value">Pcs</span></div>
+          <div class="info-row"><span class="info-label">Harga Jual</span><span class="info-value">Rp 15.000.000</span></div>
+          <div class="info-row"><span class="info-label">Harga Pokok</span><span class="info-value">Rp 12.000.000</span></div>
+          <div class="info-row"><span class="info-label">Supplier</span><span class="info-value">PT Tech Distributor</span></div>
+          <div class="info-row"><span class="info-label">Lead Time</span><span class="info-value">7 hari</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Stok per Gudang</div>
+          <div class="stock-level-bar">
+            <div class="slb-header"><span>WH-01 Jakarta</span><span style="color:#059669;font-weight:700;">22 tersedia</span></div>
+            <div class="slb-bg"><div class="slb-fill" style="width:88%;background:#0e7490;"></div></div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">Stock: 25 · Reserved: 3 · Min: 5</div>
+          </div>
+          <div class="stock-level-bar" style="margin-top:8px;">
+            <div class="slb-header"><span>WH-02 Surabaya</span><span style="color:#d97706;font-weight:700;">3 tersedia</span></div>
+            <div class="slb-bg"><div class="slb-fill" style="width:30%;background:#d97706;"></div></div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">Stock: 5 · Reserved: 2 · Min: 5</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;margin-top:8px;">Total Stok: <span style="color:#0e7490;">27 pcs</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Reorder Suggestion</div>
+          <div class="reorder-alert">
+            <div class="ra-title">⚠️ WH-02 Perlu Restock</div>
+            <div class="ra-text">Stok di WH-02 di bawah minimum (5). Disarankan memesan 15 pcs dari PT Tech Distributor.</div>
+          </div>
+          <button style="width:100%;background:#0e7490;color:white;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;">🛒 Buat Purchase Order</button>
+        </div>
+        <div class="rp-actions">
+          <button class="rp-action-btn" style="background:#d1fae5;color:#059669;">📥 Terima Stok</button>
+          <button class="rp-action-btn" style="background:#dbeafe;color:#2563eb;">🔄 Transfer</button>
+          <button class="rp-action-btn" style="background:#fef3c7;color:#d97706;">⚠️ Penyesuaian</button>
+          <button class="rp-action-btn" style="background:#f0fdfa;color:#0e7490;border:1px solid #ccfbf1;">📊 Lihat Riwayat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

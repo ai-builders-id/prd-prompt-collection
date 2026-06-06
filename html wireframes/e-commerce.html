@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f4f4f5; color:#18181b; font-size:14px; }
+  /* Header */
+  .header { background:white; border-bottom:1px solid #e4e4e7; padding:12px 24px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:100; }
+  .logo { font-size:20px; font-weight:900; color:#f97316; min-width:120px; }
+  .header-search { flex:1; max-width:500px; display:flex; gap:0; }
+  .header-search input { flex:1; border:2px solid #f97316; border-right:none; border-radius:8px 0 0 8px; padding:9px 14px; font-size:14px; outline:none; }
+  .header-search button { background:#f97316; border:none; border-radius:0 8px 8px 0; padding:0 16px; color:white; font-size:16px; cursor:pointer; }
+  .header-icons { display:flex; gap:16px; align-items:center; margin-left:auto; }
+  .header-icon { display:flex; flex-direction:column; align-items:center; font-size:12px; color:#71717a; cursor:pointer; position:relative; }
+  .header-icon:hover { color:#f97316; }
+  .cart-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; font-size:10px; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  /* Categories bar */
+  .cat-bar { background:white; border-bottom:1px solid #e4e4e7; padding:8px 24px; display:flex; gap:20px; overflow-x:auto; }
+  .cat-link { font-size:13px; color:#3f3f46; cursor:pointer; white-space:nowrap; padding:4px 0; border-bottom:2px solid transparent; }
+  .cat-link:hover { color:#f97316; border-bottom-color:#f97316; }
+  .cat-link.active { color:#f97316; font-weight:600; border-bottom-color:#f97316; }
+  /* Layout */
+  .layout { display:flex; max-width:1200px; margin:0 auto; padding:20px 16px; gap:20px; }
+  /* Filter sidebar */
+  .filter-sidebar { width:220px; flex-shrink:0; }
+  .filter-card { background:white; border:1px solid #e4e4e7; border-radius:12px; padding:16px; margin-bottom:12px; }
+  .filter-title { font-size:14px; font-weight:700; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+  .filter-clear { font-size:12px; color:#f97316; cursor:pointer; font-weight:400; }
+  .filter-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:13px; cursor:pointer; }
+  .filter-item input { cursor:pointer; accent-color:#f97316; }
+  .price-range { display:flex; gap:8px; margin-top:8px; }
+  .price-input { border:1px solid #e4e4e7; border-radius:6px; padding:6px 8px; font-size:12px; width:100%; }
+  .stars { color:#fbbf24; font-size:14px; }
+  /* Product grid */
+  .product-area { flex:1; }
+  .product-toolbar { background:white; border:1px solid #e4e4e7; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+  .product-count { font-size:13px; color:#71717a; }
+  .sort-select { border:1px solid #e4e4e7; border-radius:8px; padding:6px 10px; font-size:13px; background:white; }
+  .product-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .product-card { background:white; border:1px solid #e4e4e7; border-radius:12px; overflow:hidden; cursor:pointer; transition:box-shadow .2s; position:relative; }
+  .product-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.1); }
+  .product-img { aspect-ratio:1; background:#f4f4f5; display:flex; align-items:center; justify-content:center; font-size:52px; border-bottom:1px solid #f4f4f5; }
+  .discount-badge { position:absolute; top:10px; left:10px; background:#ef4444; color:white; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; }
+  .wishlist-btn { position:absolute; top:10px; right:10px; background:white; border:none; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15); font-size:14px; }
+  .product-body { padding:12px; }
+  .product-rating { font-size:12px; color:#71717a; margin-bottom:4px; }
+  .product-stars { color:#fbbf24; }
+  .product-name { font-size:13px; font-weight:600; margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .product-price { font-size:16px; font-weight:800; color:#f97316; }
+  .product-compare { font-size:12px; color:#a1a1aa; text-decoration:line-through; margin-left:6px; }
+  .product-stock { font-size:11px; color:#22c55e; margin-top:4px; }
+  .add-btn { width:100%; background:#f97316; color:white; border:none; border-radius:8px; padding:9px; font-size:13px; font-weight:700; cursor:pointer; margin-top:10px; }
+  .add-btn:hover { background:#ea580c; }
+  /* Cart drawer (right side) */
+  .cart-drawer { width:320px; flex-shrink:0; background:white; border:1px solid #e4e4e7; border-radius:12px; height:fit-content; position:sticky; top:72px; }
+  .cart-header { padding:14px 16px; border-bottom:1px solid #f4f4f5; display:flex; align-items:center; justify-content:space-between; }
+  .cart-title { font-size:15px; font-weight:700; }
+  .cart-items { padding:12px; }
+  .cart-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid #f4f4f5; }
+  .cart-item-img { width:52px; height:52px; background:#f4f4f5; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .cart-item-name { font-size:13px; font-weight:600; }
+  .cart-item-variant { font-size:11px; color:#71717a; }
+  .cart-item-price { font-size:13px; font-weight:700; color:#f97316; margin-top:4px; }
+  .qty-ctrl { display:flex; align-items:center; gap:6px; margin-top:6px; }
+  .qty-btn { width:24px; height:24px; border:1px solid #e4e4e7; border-radius:6px; background:white; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .qty-val { font-size:13px; font-weight:600; min-width:20px; text-align:center; }
+  .cart-promo { padding:10px 12px; border-bottom:1px solid #f4f4f5; display:flex; gap:6px; }
+  .promo-input { flex:1; border:1px solid #e4e4e7; border-radius:8px; padding:7px 10px; font-size:12px; }
+  .promo-btn { background:#f97316; color:white; border:none; border-radius:8px; padding:7px 12px; font-size:12px; cursor:pointer; font-weight:600; }
+  .cart-summary { padding:12px 16px; }
+  .summary-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; }
+  .summary-total { font-size:16px; font-weight:800; border-top:2px solid #e4e4e7; padding-top:10px; margin-top:4px; display:flex; justify-content:space-between; }
+  .checkout-btn { width:100%; background:#f97316; color:white; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:800; cursor:pointer; margin-top:10px; }
+  .checkout-btn:hover { background:#ea580c; }
+  /* Checkout steps */
+  .checkout-steps { background:white; border:1px solid #e4e4e7; border-radius:12px; padding:16px; margin-bottom:14px; }
+  .steps-row { display:flex; align-items:center; gap:0; }
+  .step { display:flex; flex-direction:column; align-items:center; flex:1; }
+  .step-circle { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+  .step-circle.done { background:#22c55e; color:white; }
+  .step-circle.current { background:#f97316; color:white; }
+  .step-circle.future { background:#e4e4e7; color:#71717a; }
+  .step-label { font-size:10px; color:#71717a; margin-top:4px; text-align:center; }
+  .step-line { flex:1; height:2px; background:#e4e4e7; margin: 0 -4px; margin-bottom:20px; }
+  .step-line.done { background:#22c55e; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">🛒 TokoBagus</div>
+  <div class="header-search">
+    <input type="text" placeholder="Cari produk, merek, kategori...">
+    <button>🔍</button>
+  </div>
+  <div class="header-icons">
+    <div class="header-icon">👤<span>Akun</span></div>
+    <div class="header-icon">❤️<span>Wishlist</span></div>
+    <div class="header-icon">
+      🛒<span>Keranjang</span>
+      <div class="cart-badge">3</div>
+    </div>
+  </div>
+</div>
+<div class="cat-bar">
+  <div class="cat-link active">Fashion Pria</div>
+  <div class="cat-link">Fashion Wanita</div>
+  <div class="cat-link">Elektronik</div>
+  <div class="cat-link">Rumah Tangga</div>
+  <div class="cat-link">Kecantikan</div>
+  <div class="cat-link">Olahraga</div>
+  <div class="cat-link">Makanan</div>
+  <div class="cat-link">Otomotif</div>
+</div>
+<!-- Checkout Steps Banner -->
+<div style="max-width:1200px;margin:16px auto 0;padding:0 16px;">
+  <div class="checkout-steps">
+    <div class="steps-row">
+      <div class="step"><div class="step-circle done">✓</div><div class="step-label">Alamat</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">2</div><div class="step-label">Pengiriman</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-circle future">3</div><div class="step-label">Pembayaran</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-circle future">4</div><div class="step-label">Konfirmasi</div></div>
+    </div>
+  </div>
+</div>
+<div class="layout">
+  <div class="filter-sidebar">
+    <div class="filter-card">
+      <div class="filter-title">Kategori <span class="filter-clear">Reset</span></div>
+      <div class="filter-item"><input type="checkbox" checked> Fashion Pria (245)</div>
+      <div class="filter-item"><input type="checkbox"> Kaos Polos (82)</div>
+      <div class="filter-item"><input type="checkbox"> Kemeja (64)</div>
+      <div class="filter-item"><input type="checkbox"> Celana (48)</div>
+      <div class="filter-item"><input type="checkbox"> Aksesoris (51)</div>
+    </div>
+    <div class="filter-card">
+      <div class="filter-title">Harga</div>
+      <div class="price-range">
+        <input class="price-input" type="text" placeholder="Min">
+        <input class="price-input" type="text" placeholder="Max">
+      </div>
+      <div style="height:6px;background:#f4f4f5;border-radius:999px;margin-top:10px;position:relative;">
+        <div style="position:absolute;left:10%;right:30%;top:0;height:100%;background:#f97316;border-radius:999px;"></div>
+      </div>
+    </div>
+    <div class="filter-card">
+      <div class="filter-title">Rating</div>
+      <div class="filter-item"><input type="checkbox"> <span class="stars">★★★★★</span> 5 bintang</div>
+      <div class="filter-item"><input type="checkbox"> <span class="stars">★★★★</span>☆ 4+</div>
+      <div class="filter-item"><input type="checkbox"> <span class="stars">★★★</span>☆☆ 3+</div>
+    </div>
+    <div class="filter-card">
+      <div class="filter-title">Merek</div>
+      <div class="filter-item"><input type="checkbox"> Brand Local (120)</div>
+      <div class="filter-item"><input type="checkbox"> Premium (65)</div>
+      <div class="filter-item"><input type="checkbox"> Impor (42)</div>
+    </div>
+  </div>
+  <div class="product-area">
+    <div class="product-toolbar">
+      <div class="product-count">245 produk ditemukan di "Fashion Pria"</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:13px;color:#71717a;">Urutkan:</span>
+        <select class="sort-select"><option>Terpopuler</option><option>Termurah</option><option>Termahal</option><option>Terbaru</option></select>
+      </div>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-img">👕</div>
+        <div class="discount-badge">-31%</div>
+        <div class="wishlist-btn">❤️</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★★</span> 4.8 (120)</div>
+          <div class="product-name">Kaos Polos Premium Cotton</div>
+          <div><span class="product-price">Rp 89.000</span><span class="product-compare">Rp 129.000</span></div>
+          <div class="product-stock">● Tersedia (50 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">👖</div>
+        <div class="discount-badge">-20%</div>
+        <div class="wishlist-btn">🤍</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★</span>☆ 4.2 (87)</div>
+          <div class="product-name">Celana Chino Slim Fit</div>
+          <div><span class="product-price">Rp 149.000</span><span class="product-compare">Rp 189.000</span></div>
+          <div class="product-stock">● Tersedia (35 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">👔</div>
+        <div class="wishlist-btn">🤍</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★★</span> 4.9 (245)</div>
+          <div class="product-name">Kemeja Formal Oxford Premium</div>
+          <div><span class="product-price">Rp 215.000</span></div>
+          <div class="product-stock">● Tersedia (18 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">🧣</div>
+        <div class="discount-badge">-45%</div>
+        <div class="wishlist-btn">❤️</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★</span>☆ 4.4 (56)</div>
+          <div class="product-name">Jaket Bomber Hoodie Premium</div>
+          <div><span class="product-price">Rp 275.000</span><span class="product-compare">Rp 499.000</span></div>
+          <div class="product-stock" style="color:#ef4444;">● Hampir habis (3 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">👞</div>
+        <div class="wishlist-btn">🤍</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★★</span> 4.7 (312)</div>
+          <div class="product-name">Sepatu Sneakers Casual Lokal</div>
+          <div><span class="product-price">Rp 340.000</span></div>
+          <div class="product-stock">● Tersedia (28 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">🎒</div>
+        <div class="discount-badge">-15%</div>
+        <div class="wishlist-btn">🤍</div>
+        <div class="product-body">
+          <div class="product-rating"><span class="product-stars">★★★★</span>☆ 4.1 (88)</div>
+          <div class="product-name">Tas Ransel Laptop Anti Air</div>
+          <div><span class="product-price">Rp 189.000</span><span class="product-compare">Rp 220.000</span></div>
+          <div class="product-stock">● Tersedia (42 pcs)</div>
+          <button class="add-btn">🛒 + Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cart-drawer">
+    <div class="cart-header">
+      <span class="cart-title">🛒 Keranjang (3)</span>
+      <span style="font-size:12px;color:#f97316;cursor:pointer;">Lihat Semua</span>
+    </div>
+    <div class="cart-items">
+      <div class="cart-item">
+        <div class="cart-item-img">👕</div>
+        <div style="flex:1;">
+          <div class="cart-item-name">Kaos Polos Premium</div>
+          <div class="cart-item-variant">Ukuran: M · Warna: Putih</div>
+          <div class="cart-item-price">Rp 89.000</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">＋</button>
+            <button style="background:none;border:none;color:#ef4444;font-size:13px;cursor:pointer;margin-left:8px;">🗑</button>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#18181b;">Rp 178.000</div>
+      </div>
+      <div class="cart-item">
+        <div class="cart-item-img">👖</div>
+        <div style="flex:1;">
+          <div class="cart-item-name">Celana Chino Slim</div>
+          <div class="cart-item-variant">Ukuran: L · Navy</div>
+          <div class="cart-item-price">Rp 149.000</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">＋</button>
+            <button style="background:none;border:none;color:#ef4444;font-size:13px;cursor:pointer;margin-left:8px;">🗑</button>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#18181b;">Rp 149.000</div>
+      </div>
+    </div>
+    <div class="cart-promo">
+      <input class="promo-input" type="text" placeholder="Masukkan kode promo...">
+      <button class="promo-btn">Pakai</button>
+    </div>
+    <div class="cart-summary">
+      <div class="summary-row"><span>Subtotal</span><span>Rp 327.000</span></div>
+      <div class="summary-row"><span>Ongkir (JNE Regular)</span><span>Rp 15.000</span></div>
+      <div class="summary-row"><span style="color:#22c55e;">Promo HEMAT10</span><span style="color:#22c55e;">-Rp 30.000</span></div>
+      <div class="summary-total"><span>Total</span><span style="color:#f97316;">Rp 312.000</span></div>
+      <button class="checkout-btn">Checkout (Rp 312.000) →</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

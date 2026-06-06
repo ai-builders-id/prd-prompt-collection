@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Management System - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f9fafb; color:#111827; height:100vh; display:flex; overflow:hidden; font-size:14px; }
+  .sidebar { width:220px; background:white; border-right:1px solid #e5e7eb; display:flex; flex-direction:column; height:100vh; }
+  .sidebar-header { padding:16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; gap:10px; }
+  .sidebar-logo { width:32px; height:32px; background:linear-gradient(135deg,#2563eb,#7c3aed); border-radius:8px; }
+  .sidebar-brand { font-size:15px; font-weight:800; color:#111; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 16px; cursor:pointer; font-size:13px; color:#6b7280; }
+  .nav-item:hover { background:#f3f4f6; color:#111; }
+  .nav-item.active { background:#eff6ff; color:#2563eb; font-weight:600; border-right:2px solid #2563eb; }
+  .nav-icon { font-size:16px; }
+  .nav-section { font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.08em; padding:12px 16px 4px; }
+  .sidebar-footer { margin-top:auto; padding:16px; border-top:1px solid #e5e7eb; display:flex; align-items:center; gap:8px; }
+  .user-avatar { width:32px; height:32px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center;justify-content:center;font-size:13px;font-weight:700; }
+  .user-name { font-size:13px; font-weight:600; }
+  .user-role { font-size:11px; color:#9ca3af; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .main-header { background:white; border-bottom:1px solid #e5e7eb; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; }
+  .main-title { font-size:18px; font-weight:700; }
+  .header-actions { display:flex; gap:8px; align-items:center; }
+  .search-input { border:1px solid #e5e7eb; border-radius:8px; padding:7px 12px; font-size:13px; width:250px; }
+  .btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#2563eb; color:white; }
+  .btn-secondary { background:white; border:1px solid #e5e7eb; color:#374151; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .content-list { flex:1; overflow-y:auto; padding:20px 24px; }
+  .filter-bar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .filter-chip { background:white; border:1px solid #e5e7eb; color:#6b7280; border-radius:999px; padding:5px 14px; font-size:12px; cursor:pointer; }
+  .filter-chip.active { background:#eff6ff; color:#2563eb; border-color:#93c5fd; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+  .stat { background:white; border:1px solid #e5e7eb; border-radius:10px; padding:14px; }
+  .stat-val { font-size:22px; font-weight:700; }
+  .stat-label { font-size:12px; color:#6b7280; margin-top:2px; }
+  .content-card { background:white; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:border-color .15s; }
+  .content-card:hover { border-color:#93c5fd; }
+  .content-card.selected { border-color:#2563eb; background:#eff6ff; }
+  .cc-left { display:flex; align-items:flex-start; gap:12px; flex:1; }
+  .cc-icon { width:36px; height:36px; background:#f3f4f6; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .cc-title { font-size:14px; font-weight:600; margin-bottom:4px; }
+  .cc-meta { font-size:12px; color:#9ca3af; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .badge-published { background:#d1fae5; color:#059669; }
+  .badge-draft { background:#fef3c7; color:#d97706; }
+  .badge-archived { background:#f3f4f6; color:#6b7280; }
+  .cc-actions { display:flex; gap:4px; opacity:0; }
+  .content-card:hover .cc-actions { opacity:1; }
+  .action-btn { background:#f3f4f6; border:none; border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; color:#374151; }
+  .action-btn:hover { background:#e5e7eb; }
+  /* Right panel: editor */
+  .right-panel { width:320px; background:white; border-left:1px solid #e5e7eb; display:flex; flex-direction:column; overflow-y:auto; }
+  .rp-section { padding:16px; border-bottom:1px solid #f3f4f6; }
+  .rp-title { font-size:14px; font-weight:700; margin-bottom:12px; }
+  .rp-label { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+  .rp-input { width:100%; border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; font-size:13px; margin-bottom:10px; }
+  .rp-select { width:100%; border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; font-size:13px; margin-bottom:10px; background:white; }
+  .preview-box { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px; min-height:120px; font-size:13px; color:#374151; line-height:1.6; }
+  .preview-title { font-size:16px; font-weight:800; margin-bottom:8px; }
+  .preview-body { font-size:13px; line-height:1.6; color:#374151; }
+  .rp-actions { padding:16px; display:flex; gap:8px; }
+  .seo-field { margin-bottom:10px; }
+  .char-count { font-size:11px; color:#9ca3af; float:right; }
+  .schedule-toggle { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .toggle { width:36px; height:20px; background:#2563eb; border-radius:999px; position:relative; cursor:pointer; }
+  .toggle-knob { width:16px; height:16px; background:white; border-radius:50%; position:absolute; top:2px; right:2px; }
+  /* Category tree */
+  .tree-container { padding:0 16px; }
+  .tree-item { display:flex; align-items:center; gap:6px; padding:6px 0; font-size:13px; cursor:pointer; border-bottom:1px solid #f3f4f6; }
+  .tree-item:hover { color:#2563eb; }
+  .tree-indent { padding-left:18px; }
+  .tree-count { margin-left:auto; background:#f3f4f6; color:#6b7280; font-size:11px; padding:1px 6px; border-radius:999px; }
+  .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .tag { background:#f3f4f6; color:#374151; font-size:12px; padding:3px 8px; border-radius:6px; display:flex; align-items:center; gap:4px; }
+  .tag span { cursor:pointer; color:#9ca3af; }
+  .tag span:hover { color:#ef4444; }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"></div>
+    <div class="sidebar-brand">CMS Pro</div>
+  </div>
+  <div class="nav-section">Konten</div>
+  <div class="nav-item active"><span class="nav-icon">📄</span> Semua Konten</div>
+  <div class="nav-item"><span class="nav-icon">🗂️</span> Kategori</div>
+  <div class="nav-item"><span class="nav-icon">🏷️</span> Tags</div>
+  <div class="nav-item"><span class="nav-icon">🖼️</span> Media Library</div>
+  <div class="nav-section">Pengaturan</div>
+  <div class="nav-item"><span class="nav-icon">⚙️</span> Pengaturan</div>
+  <div class="nav-item"><span class="nav-icon">👥</span> Pengguna</div>
+  <div class="sidebar-footer">
+    <div class="user-avatar">A</div>
+    <div><div class="user-name">Admin</div><div class="user-role">Editor</div></div>
+  </div>
+</div>
+<div class="main">
+  <div class="main-header">
+    <div class="main-title">📄 Manajemen Konten</div>
+    <div class="header-actions">
+      <input class="search-input" type="search" placeholder="🔍 Cari konten...">
+      <button class="btn btn-secondary">Filter</button>
+      <button class="btn btn-primary">＋ Buat Konten</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="content-list">
+      <div class="filter-bar">
+        <div class="filter-chip active">Semua (45)</div>
+        <div class="filter-chip">Terbit (28)</div>
+        <div class="filter-chip">Draft (12)</div>
+        <div class="filter-chip">Arsip (5)</div>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <select style="border:1px solid #e5e7eb;border-radius:8px;padding:5px 8px;font-size:12px;background:white;"><option>Semua Kategori</option><option>Tutorial</option><option>Berita</option></select>
+          <select style="border:1px solid #e5e7eb;border-radius:8px;padding:5px 8px;font-size:12px;background:white;"><option>Terbaru</option><option>Terlama</option><option>A-Z</option></select>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-val">45</div><div class="stat-label">Total Konten</div></div>
+        <div class="stat"><div class="stat-val" style="color:#059669;">28</div><div class="stat-label">Diterbitkan</div></div>
+        <div class="stat"><div class="stat-val" style="color:#d97706;">12</div><div class="stat-label">Draft</div></div>
+        <div class="stat"><div class="stat-val" style="color:#6b7280;">5</div><div class="stat-label">Diarsipkan</div></div>
+      </div>
+      <div class="content-card selected">
+        <div class="cc-left">
+          <div class="cc-icon">📝</div>
+          <div>
+            <div class="cc-title">Panduan Lengkap React 2025</div>
+            <div class="cc-meta">
+              <span class="badge badge-published">Terbit</span>
+              <span>Tutorial → React</span>
+              <span>Admin</span>
+              <span>12 Jan 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="action-btn">✏️ Edit</button>
+          <button class="action-btn">👁 Preview</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="cc-left">
+          <div class="cc-icon">📰</div>
+          <div>
+            <div class="cc-title">Next.js 15 vs Remix: Perbandingan Mendalam</div>
+            <div class="cc-meta">
+              <span class="badge badge-draft">Draft</span>
+              <span>Tutorial → Frontend</span>
+              <span>Budi</span>
+              <span>15 Jan 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="action-btn">✏️ Edit</button>
+          <button class="action-btn">👁 Preview</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="cc-left">
+          <div class="cc-icon">📣</div>
+          <div>
+            <div class="cc-title">Update Besar: TypeScript 5.7 Release</div>
+            <div class="cc-meta">
+              <span class="badge badge-published">Terbit</span>
+              <span>Berita</span>
+              <span>Admin</span>
+              <span>10 Jan 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="action-btn">✏️ Edit</button>
+          <button class="action-btn">👁 Preview</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="cc-left">
+          <div class="cc-icon">🎓</div>
+          <div>
+            <div class="cc-title">10 Tips Optimasi Performa React App</div>
+            <div class="cc-meta">
+              <span class="badge badge-published">Terbit</span>
+              <span>Tutorial → React</span>
+              <span>Siti</span>
+              <span>08 Jan 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="action-btn">✏️ Edit</button>
+          <button class="action-btn">👁 Preview</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="cc-left">
+          <div class="cc-icon">💡</div>
+          <div>
+            <div class="cc-title">Opini: Apakah AI akan Menggantikan Frontend Developer?</div>
+            <div class="cc-meta">
+              <span class="badge badge-archived">Arsip</span>
+              <span>Opini</span>
+              <span>Admin</span>
+              <span>01 Des 2024</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="action-btn">✏️ Edit</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="rp-section">
+        <div class="rp-title">✏️ Edit Konten</div>
+        <div class="rp-label">Judul</div>
+        <input class="rp-input" type="text" value="Panduan Lengkap React 2025">
+        <div class="rp-label">Slug <span class="char-count">URL: /panduan-react-2025</span></div>
+        <input class="rp-input" type="text" value="panduan-lengkap-react-2025">
+        <div class="rp-label">Kategori</div>
+        <select class="rp-select"><option>Tutorial → React</option><option>Tutorial → Frontend</option><option>Berita</option></select>
+        <div class="rp-label">Tags</div>
+        <div class="tag-list">
+          <div class="tag">react <span>×</span></div>
+          <div class="tag">frontend <span>×</span></div>
+          <div class="tag">javascript <span>×</span></div>
+        </div>
+        <input class="rp-input" type="text" placeholder="Tambah tag..." style="margin-top:8px;">
+      </div>
+      <div class="rp-section">
+        <div class="rp-label">Preview Konten</div>
+        <div class="preview-box">
+          <div class="preview-title">Panduan Lengkap React 2025</div>
+          <div class="preview-body">React terus berkembang pesat. Panduan ini mencakup semua yang perlu kamu ketahui untuk memulai atau meningkatkan skill React di tahun 2025...</div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">SEO & Meta</div>
+        <div class="rp-label">SEO Title <span class="char-count">58/60</span></div>
+        <input class="rp-input" type="text" value="Panduan Lengkap React 2025 — Tutorial Bahasa Indonesia">
+        <div class="rp-label">Meta Description <span class="char-count">142/160</span></div>
+        <textarea class="rp-input" rows="3" style="resize:none;">Pelajari React dari dasar hingga advanced dengan panduan komprehensif 2025. Cocok untuk pemula dan developer berpengalaman.</textarea>
+        <div class="rp-label">Gambar Unggulan</div>
+        <div style="background:#f3f4f6;border:1px dashed #e5e7eb;border-radius:8px;padding:20px;text-align:center;font-size:12px;color:#9ca3af;cursor:pointer;">
+          🖼️ Klik untuk pilih gambar atau drag & drop
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Publikasi</div>
+        <div class="schedule-toggle">
+          <span style="font-size:13px;">Visibilitas Publik</span>
+          <div class="toggle"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="schedule-toggle">
+          <span style="font-size:13px;">Jadwal Otomatis</span>
+          <div class="toggle" style="background:#e5e7eb;"><div class="toggle-knob" style="right:auto;left:2px;"></div></div>
+        </div>
+        <div class="rp-label">Penulis</div>
+        <select class="rp-select"><option>Admin</option><option>Budi</option><option>Siti</option></select>
+      </div>
+      <div class="rp-actions">
+        <button class="btn btn-secondary" style="flex:1;">Simpan Draft</button>
+        <button class="btn btn-primary" style="flex:1;">Terbitkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

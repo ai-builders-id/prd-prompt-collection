@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Intelligence - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#0f0f23; color:#e2e8f0; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#1e1b4b; border-bottom:1px solid #312e81; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .logo { width:28px; height:28px; background:linear-gradient(135deg,#7c3aed,#06b6d4); border-radius:8px; display:inline-block; }
+  .topbar h1 { font-size:16px; font-weight:700; color:white; display:inline; margin-left:10px; vertical-align:middle; }
+  .topbar-right { display:flex; gap:10px; align-items:center; }
+  .btn-outline { background:transparent; border:1px solid #4c1d95; color:#a5b4fc; border-radius:8px; padding:6px 14px; font-size:12px; cursor:pointer; }
+  .btn-outline:hover { background:#2e1065; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#13132a; border-right:1px solid #1e1b4b; display:flex; flex-direction:column; padding:12px; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:#94a3b8; margin-bottom:2px; }
+  .nav-item:hover { background:#1e1b4b; color:#e2e8f0; }
+  .nav-item.active { background:#2e1065; color:#c4b5fd; font-weight:600; }
+  .nav-section-title { font-size:10px; font-weight:700; color:#4c1d95; text-transform:uppercase; letter-spacing:.08em; padding:12px 12px 4px; }
+  .new-btn { width:100%; background:#7c3aed; color:white; border:none; border-radius:8px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:14px; }
+  .new-btn:hover { background:#6d28d9; }
+  .dash-item { padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; color:#94a3b8; margin-bottom:2px; display:flex; align-items:center; gap:6px; }
+  .dash-item:hover { background:#1e1b4b; color:#e2e8f0; }
+  .dash-dot { width:8px; height:8px; border-radius:50%; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { padding:14px 20px; background:#13132a; border-bottom:1px solid #1e1b4b; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .filter-chip { background:#1e1b4b; border:1px solid #312e81; color:#94a3b8; border-radius:999px; padding:4px 12px; font-size:12px; cursor:pointer; }
+  .filter-chip.active { background:#2e1065; color:#c4b5fd; border-color:#7c3aed; }
+  .mode-toggle { display:flex; background:#1e1b4b; border-radius:8px; overflow:hidden; }
+  .mode-btn { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#94a3b8; }
+  .mode-btn.active { background:#7c3aed; color:white; }
+  .dashboard-grid { flex:1; overflow-y:auto; padding:20px; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:auto auto auto; gap:16px; }
+  .widget { background:#13132a; border:1px solid #1e1b4b; border-radius:12px; overflow:hidden; }
+  .widget.wide { grid-column:span 2; }
+  .widget.full { grid-column:span 3; }
+  .widget-header { padding:12px 16px; border-bottom:1px solid #1e1b4b; display:flex; align-items:center; justify-content:space-between; }
+  .widget-title { font-size:13px; font-weight:600; color:#e2e8f0; }
+  .widget-menu { font-size:12px; color:#4c1d95; cursor:pointer; }
+  .chart-area { padding:16px; }
+  /* Fake bar chart */
+  .bar-chart { display:flex; align-items:flex-end; gap:8px; height:120px; padding-bottom:4px; }
+  .bar { flex:1; border-radius:4px 4px 0 0; transition:opacity .2s; cursor:pointer; }
+  .bar:hover { opacity:.8; }
+  .bar-labels { display:flex; gap:8px; padding:0 16px 8px; font-size:10px; color:#6b7280; }
+  .bar-label { flex:1; text-align:center; }
+  /* Fake line chart */
+  .line-chart { height:100px; position:relative; background:linear-gradient(to bottom,rgba(124,58,237,.1),transparent); border-radius:8px; overflow:hidden; display:flex; align-items:flex-end; }
+  .line-path { width:100%; height:100%; position:absolute; top:0; left:0; }
+  /* Metric card */
+  .metric-value { font-size:28px; font-weight:700; color:#c4b5fd; }
+  .metric-label { font-size:12px; color:#6b7280; margin-top:4px; }
+  .metric-change { font-size:12px; margin-top:8px; }
+  .metric-up { color:#34d399; }
+  .metric-down { color:#f87171; }
+  /* Table widget */
+  .mini-table { width:100%; }
+  .mini-table th { padding:8px 12px; font-size:11px; color:#4c1d95; text-transform:uppercase; letter-spacing:.05em; text-align:left; border-bottom:1px solid #1e1b4b; }
+  .mini-table td { padding:9px 12px; font-size:13px; color:#94a3b8; border-bottom:1px solid rgba(30,27,75,.5); }
+  .mini-table tr:last-child td { border-bottom:none; }
+  /* Pie chart mock */
+  .pie-mock { width:80px; height:80px; border-radius:50%; background:conic-gradient(#7c3aed 0% 45%,#06b6d4 45% 70%,#10b981 70% 85%,#f59e0b 85% 100%); margin:0 auto; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:#94a3b8; margin-bottom:4px; }
+  .legend-dot { width:8px; height:8px; border-radius:2px; }
+  .right-config { width:280px; background:#13132a; border-left:1px solid #1e1b4b; overflow-y:auto; padding:16px; }
+  .rc-title { font-size:14px; font-weight:600; margin-bottom:14px; }
+  .rc-section { margin-bottom:16px; }
+  .rc-label { font-size:11px; font-weight:700; color:#4c1d95; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+  .chart-type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .chart-type-btn { background:#1e1b4b; border:1px solid #312e81; border-radius:8px; padding:8px 4px; text-align:center; font-size:11px; color:#94a3b8; cursor:pointer; }
+  .chart-type-btn.active { border-color:#7c3aed; color:#c4b5fd; background:#2e1065; }
+  .chart-type-icon { font-size:18px; display:block; margin-bottom:4px; }
+  .field-slot { background:#1e1b4b; border:1px dashed #312e81; border-radius:8px; padding:8px 10px; font-size:12px; color:#6b7280; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+  .field-slot.filled { border-style:solid; border-color:#7c3aed; color:#c4b5fd; }
+  select.rc-select { width:100%; background:#1e1b4b; border:1px solid #312e81; border-radius:8px; padding:7px 10px; font-size:12px; color:#94a3b8; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="logo"></div>
+    <h1>Business Intelligence Platform</h1>
+  </div>
+  <div class="topbar-right">
+    <span style="font-size:12px;color:#94a3b8;">Penjualan 2025</span>
+    <button class="btn-outline">＋ Buat Dashboard</button>
+    <button class="btn-outline">Ekspor</button>
+    <div style="width:32px;height:32px;border-radius:50%;background:#2e1065;display:flex;align-items:center;justify-content:center;font-size:12px;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <button class="new-btn">📊 Buat Dashboard Baru</button>
+    <div class="nav-section-title">Navigasi</div>
+    <div class="nav-item active">📊 Dashboards</div>
+    <div class="nav-item">📄 Laporan</div>
+    <div class="nav-item">🗄️ Sumber Data</div>
+    <div class="nav-item">📉 Grafik Library</div>
+    <div class="nav-item">⚙️ Pengaturan</div>
+    <div class="nav-section-title" style="margin-top:12px;">Tersimpan</div>
+    <div class="dash-item"><div class="dash-dot" style="background:#7c3aed;"></div> Penjualan 2025</div>
+    <div class="dash-item"><div class="dash-dot" style="background:#06b6d4;"></div> Keuangan Q1</div>
+    <div class="dash-item"><div class="dash-dot" style="background:#10b981;"></div> Operasional</div>
+    <div class="dash-item"><div class="dash-dot" style="background:#f59e0b;"></div> HR Overview</div>
+    <div class="dash-item"><div class="dash-dot" style="background:#f87171;"></div> Marketing ROI</div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>📊 Penjualan 2025</h2>
+        <div class="filter-chip active">Jan – Des 2025</div>
+        <div class="filter-chip">Semua Region</div>
+        <div class="filter-chip">Semua Produk</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="mode-toggle">
+          <button class="mode-btn active">Lihat</button>
+          <button class="mode-btn">Edit</button>
+        </div>
+        <button class="btn-outline">+ Tambah Widget</button>
+      </div>
+    </div>
+    <div class="dashboard-grid">
+      <!-- Metric cards -->
+      <div class="widget">
+        <div class="widget-header"><span class="widget-title">Total Revenue</span><span class="widget-menu">⋯</span></div>
+        <div class="chart-area">
+          <div class="metric-value">Rp 2,1M</div>
+          <div class="metric-label">Januari – Juni 2025</div>
+          <div class="metric-change metric-up">▲ +15% vs periode lalu</div>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-header"><span class="widget-title">Total Orders</span><span class="widget-menu">⋯</span></div>
+        <div class="chart-area">
+          <div class="metric-value">4.820</div>
+          <div class="metric-label">Pesanan masuk</div>
+          <div class="metric-change metric-up">▲ +8% vs bulan lalu</div>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-header"><span class="widget-title">Avg Order Value</span><span class="widget-menu">⋯</span></div>
+        <div class="chart-area">
+          <div class="metric-value">Rp 435k</div>
+          <div class="metric-label">Per transaksi</div>
+          <div class="metric-change metric-down">▼ -2% vs bulan lalu</div>
+        </div>
+      </div>
+      <!-- Bar chart -->
+      <div class="widget wide">
+        <div class="widget-header"><span class="widget-title">Revenue by Month (Bar)</span><span class="widget-menu">⋯</span></div>
+        <div class="chart-area">
+          <div class="bar-chart">
+            <div class="bar" style="height:60%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:75%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:55%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:90%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:70%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:100%;background:linear-gradient(to top,#06b6d4,#67e8f9);"></div>
+            <div class="bar" style="height:80%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+            <div class="bar" style="height:65%;background:linear-gradient(to top,#7c3aed,#a78bfa);"></div>
+          </div>
+          <div class="bar-labels">
+            <div class="bar-label">Jan</div><div class="bar-label">Feb</div><div class="bar-label">Mar</div><div class="bar-label">Apr</div><div class="bar-label">Mei</div><div class="bar-label">Jun</div><div class="bar-label">Jul</div><div class="bar-label">Agu</div>
+          </div>
+        </div>
+      </div>
+      <!-- Pie chart -->
+      <div class="widget">
+        <div class="widget-header"><span class="widget-title">Revenue by Region (Pie)</span><span class="widget-menu">⋯</span></div>
+        <div class="chart-area">
+          <div class="pie-mock" style="margin-bottom:12px;"></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#7c3aed;"></div> Jakarta 45%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#06b6d4;"></div> Surabaya 25%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div> Bandung 15%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> Lainnya 15%</div>
+        </div>
+      </div>
+      <!-- Top Products table -->
+      <div class="widget wide">
+        <div class="widget-header"><span class="widget-title">Top Products</span><span class="widget-menu">⋯</span></div>
+        <table class="mini-table">
+          <thead><tr><th>#</th><th>Produk</th><th>Region</th><th>Revenue</th><th>Qty</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Product Alpha</td><td>Jakarta</td><td style="color:#a78bfa;">Rp 500 jt</td><td>1.240</td></tr>
+            <tr><td>2</td><td>Product Beta</td><td>Surabaya</td><td style="color:#a78bfa;">Rp 350 jt</td><td>890</td></tr>
+            <tr><td>3</td><td>Product Gamma</td><td>Bandung</td><td style="color:#a78bfa;">Rp 280 jt</td><td>700</td></tr>
+            <tr><td>4</td><td>Product Delta</td><td>Jakarta</td><td style="color:#a78bfa;">Rp 210 jt</td><td>540</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="right-config">
+    <div class="rc-title">⚙ Konfigurasi Widget</div>
+    <div class="rc-section">
+      <div class="rc-label">Tipe Grafik</div>
+      <div class="chart-type-grid">
+        <div class="chart-type-btn active"><span class="chart-type-icon">📊</span>Bar</div>
+        <div class="chart-type-btn"><span class="chart-type-icon">📈</span>Line</div>
+        <div class="chart-type-btn"><span class="chart-type-icon">🍩</span>Pie</div>
+        <div class="chart-type-btn"><span class="chart-type-icon">📉</span>Area</div>
+        <div class="chart-type-btn"><span class="chart-type-icon">🔢</span>Metrik</div>
+        <div class="chart-type-btn"><span class="chart-type-icon">📋</span>Tabel</div>
+      </div>
+    </div>
+    <div class="rc-section">
+      <div class="rc-label">Sumber Data</div>
+      <select class="rc-select"><option>Penjualan</option><option>Keuangan</option><option>Marketing</option></select>
+    </div>
+    <div class="rc-section">
+      <div class="rc-label">X-Axis (Dimensi)</div>
+      <div class="field-slot filled">📅 Bulan <span style="font-size:10px;color:#7c3aed;">▼</span></div>
+    </div>
+    <div class="rc-section">
+      <div class="rc-label">Y-Axis (Ukuran)</div>
+      <div class="field-slot filled">∑ SUM: Revenue <span style="font-size:10px;color:#7c3aed;">▼</span></div>
+    </div>
+    <div class="rc-section">
+      <div class="rc-label">Group By</div>
+      <div class="field-slot">+ Drag field di sini</div>
+    </div>
+    <div class="rc-section">
+      <div class="rc-label">Preview</div>
+      <div style="background:#1e1b4b;border-radius:8px;padding:12px;">
+        <div class="bar-chart" style="height:80px;">
+          <div class="bar" style="height:60%;background:#7c3aed;"></div>
+          <div class="bar" style="height:80%;background:#7c3aed;"></div>
+          <div class="bar" style="height:100%;background:#06b6d4;"></div>
+          <div class="bar" style="height:70%;background:#7c3aed;"></div>
+          <div class="bar" style="height:50%;background:#7c3aed;"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button style="flex:1;background:#1e1b4b;border:1px solid #312e81;color:#94a3b8;border-radius:8px;padding:8px;font-size:13px;cursor:pointer;">Batal</button>
+      <button style="flex:1;background:#7c3aed;border:none;color:white;border-radius:8px;padding:8px;font-size:13px;cursor:pointer;">Simpan Widget</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

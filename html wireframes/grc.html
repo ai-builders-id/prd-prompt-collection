@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRC - Governance Risk Compliance - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#0f172a; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#1e3a5f; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#172554; color:white; display:flex; flex-direction:column; padding:12px; }
+  .sidebar-stats { background:rgba(255,255,255,.08); border-radius:8px; padding:10px 12px; margin-bottom:12px; }
+  .ss-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .ss-label { color:rgba(255,255,255,.55); }
+  .ss-val { font-weight:700; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.15); color:white; font-weight:600; }
+  .nav-badge { margin-left:auto; background:#ef4444; color:white; font-size:10px; padding:1px 5px; border-radius:999px; min-width:16px; text-align:center; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .tab-bar { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .tab { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .tab.active { background:#1e3a5f; color:white; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#1e3a5f; color:white; }
+  .btn-secondary { background:white; border:1px solid #e2e8f0; color:#374151; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .main-content { flex:1; overflow-y:auto; padding:20px; }
+  /* Stats row */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+  .stat-card { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px; }
+  .stat-val { font-size:24px; font-weight:800; }
+  .stat-label { font-size:12px; color:#64748b; margin-top:3px; }
+  /* Compliance gauge */
+  .comp-overview { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px; margin-bottom:16px; }
+  .comp-title { font-size:14px; font-weight:700; margin-bottom:14px; }
+  .comp-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .comp-label { font-size:13px; min-width:80px; }
+  .comp-bar-bg { flex:1; height:12px; background:#f1f5f9; border-radius:999px; overflow:hidden; }
+  .comp-bar-fill { height:100%; border-radius:999px; }
+  .comp-pct { font-size:13px; font-weight:700; min-width:36px; text-align:right; }
+  .comp-badge { font-size:11px; padding:2px 8px; border-radius:999px; font-weight:600; min-width:32px; text-align:center; }
+  .cb-ok { background:#d1fae5; color:#059669; }
+  .cb-warn { background:#fef3c7; color:#d97706; }
+  /* Risk heatmap */
+  .heatmap-card { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px; margin-bottom:16px; }
+  .heatmap { display:grid; grid-template-columns:24px repeat(5,1fr); grid-template-rows:auto repeat(5,40px); gap:4px; margin:12px 0; }
+  .hm-axis-y { font-size:10px; color:#94a3b8; display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg); }
+  .hm-cell { border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; cursor:pointer; transition:opacity .2s; }
+  .hm-cell:hover { opacity:.85; }
+  .hm-label { font-size:10px; color:#94a3b8; text-align:center; display:flex; align-items:center; justify-content:center; }
+  .hm-green { background:#bbf7d0; color:#065f46; }
+  .hm-yellow { background:#fef08a; color:#713f12; }
+  .hm-orange { background:#fed7aa; color:#7c2d12; }
+  .hm-red { background:#fecaca; color:#7f1d1d; }
+  /* Risk register */
+  .risk-table { width:100%; border-collapse:collapse; }
+  .risk-table th { padding:10px 12px; text-align:left; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; background:#f8fafc; border-bottom:1px solid #e2e8f0; }
+  .risk-table td { padding:11px 12px; border-bottom:1px solid #f1f5f9; font-size:13px; }
+  .risk-table tr:hover td { background:#f8fafc; cursor:pointer; }
+  .risk-level { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+  .rl-critical { background:#fee2e2; color:#dc2626; }
+  .rl-high { background:#fed7aa; color:#c2410c; }
+  .rl-medium { background:#fef3c7; color:#d97706; }
+  .rl-low { background:#d1fae5; color:#059669; }
+  .risk-score { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; }
+  /* Policy list */
+  .policy-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px; cursor:pointer; }
+  .policy-card:hover { border-color:#6b7280; }
+  .policy-icon { font-size:20px; }
+  .policy-code { font-size:11px; font-weight:700; color:#1e3a5f; font-family:monospace; }
+  .policy-title { font-size:13px; font-weight:700; }
+  .policy-meta { font-size:12px; color:#64748b; display:flex; gap:8px; margin-top:3px; }
+  .status-badge { padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .sb-active { background:#d1fae5; color:#059669; }
+  .sb-review { background:#fef3c7; color:#d97706; }
+  .sb-draft { background:#f1f5f9; color:#6b7280; }
+  .sb-expired { background:#fee2e2; color:#dc2626; }
+  /* Right panel */
+  .right-panel { width:300px; background:white; border-left:1px solid #e2e8f0; overflow-y:auto; }
+  .rp-section { padding:14px 16px; border-bottom:1px solid #f1f5f9; }
+  .rp-section-title { font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .finding-card { background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+  .finding-severity { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+  .fs-critical { color:#dc2626; }
+  .fs-high { color:#c2410c; }
+  .finding-title { font-size:13px; font-weight:700; }
+  .finding-meta { font-size:11px; color:#6b7280; margin-top:4px; }
+  .finding-status { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; margin-top:6px; }
+  .control-item { display:flex; gap:8px; padding:8px 0; border-bottom:1px solid #f8fafc; }
+  .control-type { font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; height:fit-content; }
+  .ct-preventive { background:#dbeafe; color:#1d4ed8; }
+  .ct-detective { background:#f3e8ff; color:#6d28d9; }
+  .ct-corrective { background:#fef3c7; color:#d97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🛡️ GRC — Governance, Risk & Compliance</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span style="font-size:12px;opacity:.8;">Compliance Score: 78% · 3 Risiko Kritis</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-stats">
+      <div class="ss-row"><span class="ss-label">Compliance</span><span class="ss-val" style="color:#4ade80;">78%</span></div>
+      <div class="ss-row"><span class="ss-label">Risiko Terbuka</span><span class="ss-val" style="color:#fbbf24;">24</span></div>
+      <div class="ss-row"><span class="ss-label">Audit Aktif</span><span class="ss-val" style="color:#60a5fa;">3</span></div>
+      <div class="ss-row"><span class="ss-label">Findings Open</span><span class="ss-val" style="color:#f87171;">8</span></div>
+    </div>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">📜 Kebijakan</div>
+    <div class="nav-item">⚠️ Risiko <span class="nav-badge">3</span></div>
+    <div class="nav-item">🔍 Audit</div>
+    <div class="nav-item">✅ Kepatuhan</div>
+    <div class="nav-item">🚨 Insiden</div>
+    <div class="nav-item">📈 Laporan</div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Risk Register & Compliance</h2>
+        <div class="tab-bar">
+          <button class="tab active">Risk Register</button>
+          <button class="tab">Kebijakan</button>
+          <button class="tab">Audit</button>
+          <button class="tab">Kepatuhan</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary">Filter</button>
+        <button class="btn btn-primary">＋ Tambah Risiko</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="main-content">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-val" style="color:#dc2626;">3</div><div class="stat-label">Risiko Kritis</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#c2410c;">8</div><div class="stat-label">Risiko Tinggi</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#d97706;">13</div><div class="stat-label">Risiko Sedang</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#059669;">78%</div><div class="stat-label">Compliance Score</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="heatmap-card">
+            <div class="comp-title">🔥 Risk Heatmap</div>
+            <div class="heatmap">
+              <div class="hm-axis-y">Impact ↑</div>
+              <div class="hm-label" style="font-size:10px;color:#64748b;font-weight:700;align-items:flex-start;">5</div>
+              <div class="hm-cell hm-orange">2</div>
+              <div class="hm-cell hm-red" style="box-shadow:inset 0 0 0 2px #dc2626;">RSK-1</div>
+              <div class="hm-cell hm-red">1</div>
+              <div class="hm-cell hm-red">2</div>
+              <div class="hm-label" style="font-size:10px;color:#64748b;font-weight:700;">4</div>
+              <div class="hm-cell hm-yellow">1</div>
+              <div class="hm-cell hm-orange">3</div>
+              <div class="hm-cell hm-orange">2</div>
+              <div class="hm-cell hm-red">1</div>
+              <div class="hm-label" style="font-size:10px;color:#64748b;font-weight:700;">3</div>
+              <div class="hm-cell hm-green">0</div>
+              <div class="hm-cell hm-yellow">2</div>
+              <div class="hm-cell hm-orange">RSK-2</div>
+              <div class="hm-cell hm-orange">1</div>
+              <div class="hm-label" style="font-size:10px;color:#64748b;font-weight:700;">2</div>
+              <div class="hm-cell hm-green">0</div>
+              <div class="hm-cell hm-green">1</div>
+              <div class="hm-cell hm-yellow">2</div>
+              <div class="hm-cell hm-orange">1</div>
+              <div class="hm-label" style="font-size:10px;color:#64748b;font-weight:700;">1</div>
+              <div class="hm-cell hm-green">0</div>
+              <div class="hm-cell hm-green">0</div>
+              <div class="hm-cell hm-green">1</div>
+              <div class="hm-cell hm-yellow">2</div>
+              <div></div>
+              <div class="hm-label">1</div>
+              <div class="hm-label">2</div>
+              <div class="hm-label">3</div>
+              <div class="hm-label">4</div>
+              <div style="grid-column:1/-1;font-size:10px;color:#94a3b8;text-align:center;margin-top:4px;">Likelihood →</div>
+            </div>
+          </div>
+          <div class="comp-overview">
+            <div class="comp-title">📊 Compliance by Regulation</div>
+            <div class="comp-row">
+              <div class="comp-label">UU PDP</div>
+              <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:82%;background:#059669;"></div></div>
+              <div class="comp-pct" style="color:#059669;">82%</div>
+              <div class="comp-badge cb-ok">✅</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label">ISO 27001</div>
+              <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:70%;background:#d97706;"></div></div>
+              <div class="comp-pct" style="color:#d97706;">70%</div>
+              <div class="comp-badge cb-warn">⚠️</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label">PCI DSS</div>
+              <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:75%;background:#d97706;"></div></div>
+              <div class="comp-pct" style="color:#d97706;">75%</div>
+              <div class="comp-badge cb-warn">⚠️</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label">SOX</div>
+              <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:90%;background:#059669;"></div></div>
+              <div class="comp-pct" style="color:#059669;">90%</div>
+              <div class="comp-badge cb-ok">✅</div>
+            </div>
+            <div style="border-top:1px solid #e2e8f0;margin-top:12px;padding-top:10px;display:flex;justify-content:space-between;font-size:13px;">
+              <span style="color:#64748b;">Overall</span>
+              <span style="font-size:18px;font-weight:800;color:#1e3a5f;">78%</span>
+            </div>
+          </div>
+        </div>
+        <div class="heatmap-card">
+          <div class="comp-title">Risk Register</div>
+          <table class="risk-table">
+            <thead>
+              <tr><th>Kode</th><th>Judul Risiko</th><th>Kategori</th><th>Kemungkinan</th><th>Dampak</th><th>Skor</th><th>Level</th><th>Status</th><th>Owner</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code style="font-size:11px;">RSK-001</code></td>
+                <td style="max-width:160px;">Data breach via third-party vendor</td>
+                <td>Compliance</td>
+                <td style="text-align:center;">3</td>
+                <td style="text-align:center;">5</td>
+                <td><div class="risk-score" style="background:#fee2e2;color:#dc2626;">15</div></td>
+                <td><span class="risk-level rl-critical">🔴 Kritis</span></td>
+                <td><span class="status-badge sb-review">Mitigasi</span></td>
+                <td>Siti R.</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">RSK-002</code></td>
+                <td style="max-width:160px;">Kegagalan sistem backup</td>
+                <td>Operasional</td>
+                <td style="text-align:center;">2</td>
+                <td style="text-align:center;">4</td>
+                <td><div class="risk-score" style="background:#fed7aa;color:#c2410c;">8</div></td>
+                <td><span class="risk-level rl-high">🟠 Tinggi</span></td>
+                <td><span class="status-badge sb-active">Dinilai</span></td>
+                <td>Budi S.</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">RSK-003</code></td>
+                <td style="max-width:160px;">Risiko kepatuhan GDPR/UU PDP</td>
+                <td>Compliance</td>
+                <td style="text-align:center;">4</td>
+                <td style="text-align:center;">4</td>
+                <td><div class="risk-score" style="background:#fee2e2;color:#dc2626;">16</div></td>
+                <td><span class="risk-level rl-critical">🔴 Kritis</span></td>
+                <td><span class="status-badge sb-review">Pemantauan</span></td>
+                <td>Ahmad F.</td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px;">RSK-004</code></td>
+                <td style="max-width:160px;">Risiko keuangan: fluktuasi kurs</td>
+                <td>Finansial</td>
+                <td style="text-align:center;">3</td>
+                <td style="text-align:center;">3</td>
+                <td><div class="risk-score" style="background:#fef3c7;color:#d97706;">9</div></td>
+                <td><span class="risk-level rl-medium">🟡 Sedang</span></td>
+                <td><span class="status-badge sb-active">Diterima</span></td>
+                <td>CFO</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="rp-section">
+          <div class="rp-section-title">Audit Findings Terbuka</div>
+          <div class="finding-card">
+            <div class="finding-severity fs-critical">🔴 Critical</div>
+            <div class="finding-title">Password policy not enforced</div>
+            <div class="finding-meta">ISO 27001 Internal Audit · 15 akun dengan password default</div>
+            <div class="finding-meta">Target: 01 Feb 2025</div>
+            <div style="display:flex;gap:4px;margin-top:8px;">
+              <button style="background:#dbeafe;border:none;color:#1d4ed8;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">In Progress</button>
+              <button style="background:#f1f5f9;border:none;color:#374151;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">Resolve</button>
+            </div>
+          </div>
+          <div class="finding-card" style="background:#fff7ed;border-color:#fed7aa;">
+            <div class="finding-severity fs-high" style="color:#c2410c;">🟠 High</div>
+            <div class="finding-title">Access log tidak dimonitor secara otomatis</div>
+            <div class="finding-meta">UU PDP Audit · Target: 15 Feb 2025</div>
+            <div style="display:flex;gap:4px;margin-top:8px;">
+              <button style="background:#fef3c7;border:none;color:#d97706;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">Open</button>
+              <button style="background:#f1f5f9;border:none;color:#374151;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">Assign</button>
+            </div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Risk Controls — RSK-001</div>
+          <div class="control-item">
+            <div class="control-type ct-preventive">Prev.</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;">Vendor Security Assessment</div>
+              <div style="font-size:11px;color:#6b7280;">Assess vendor setiap 6 bulan · Medium effectiveness</div>
+            </div>
+          </div>
+          <div class="control-item">
+            <div class="control-type ct-detective">Detect.</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;">Data Access Monitoring</div>
+              <div style="font-size:11px;color:#6b7280;">Monitoring akses data real-time · High effectiveness</div>
+            </div>
+          </div>
+          <div class="control-item">
+            <div class="control-type ct-corrective">Corr.</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;">Incident Response Plan</div>
+              <div style="font-size:11px;color:#6b7280;">Prosedur respons breach · High effectiveness</div>
+            </div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Kebijakan Aktif</div>
+          <div class="policy-card" style="padding:10px 12px;border-radius:8px;">
+            <div class="policy-icon">📜</div>
+            <div>
+              <div style="font-size:11px;font-family:monospace;color:#1e3a5f;font-weight:700;">POL-001</div>
+              <div style="font-size:13px;font-weight:600;">Kebijakan Keamanan Informasi</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px;">v2.1 · Review: Jan 2026 · <span style="color:#059669;font-weight:600;">Active</span></div>
+            </div>
+          </div>
+          <div class="policy-card" style="padding:10px 12px;border-radius:8px;">
+            <div class="policy-icon">📋</div>
+            <div>
+              <div style="font-size:11px;font-family:monospace;color:#1e3a5f;font-weight:700;">POL-002</div>
+              <div style="font-size:13px;font-weight:600;">Kebijakan Perlindungan Data</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px;">v1.3 · Review: Mar 2025 · <span style="color:#d97706;font-weight:600;">Review Soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <button style="width:100%;background:#1e3a5f;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">＋ Buat Kebijakan Baru</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

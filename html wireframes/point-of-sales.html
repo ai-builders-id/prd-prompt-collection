@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point of Sales - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f0fdf4; color:#1c1917; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#16a34a; color:white; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar-brand { font-size:16px; font-weight:800; }
+  .topbar-meta { font-size:12px; opacity:.85; }
+  .topbar-right { display:flex; gap:10px; align-items:center; }
+  .time { font-size:15px; font-weight:700; }
+  .cashier-btn { background:rgba(255,255,255,.2); border:none; color:white; border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer; }
+  .layout { display:flex; flex:1; overflow:hidden; }
+  /* Product catalog */
+  .catalog { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .search-bar-row { padding:14px 16px; background:white; border-bottom:1px solid #d1fae5; display:flex; gap:10px; }
+  .search-input { flex:1; border:2px solid #86efac; border-radius:10px; padding:10px 14px; font-size:14px; outline:none; }
+  .search-input:focus { border-color:#16a34a; }
+  .barcode-btn { background:#16a34a; color:white; border:none; border-radius:10px; padding:10px 16px; font-size:13px; cursor:pointer; font-weight:600; }
+  .cat-tabs { padding:10px 16px; background:white; border-bottom:1px solid #d1fae5; display:flex; gap:8px; overflow-x:auto; }
+  .cat-tab { padding:6px 14px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; border:2px solid transparent; }
+  .cat-tab.active { background:#16a34a; color:white; border-color:#16a34a; }
+  .cat-tab:not(.active) { background:white; color:#64748b; border-color:#d1fae5; }
+  .product-grid { flex:1; overflow-y:auto; padding:14px 16px; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .product-card { background:white; border:2px solid #d1fae5; border-radius:12px; padding:12px; cursor:pointer; transition:all .15s; text-align:center; }
+  .product-card:hover { border-color:#16a34a; box-shadow:0 4px 12px rgba(22,163,74,.15); transform:translateY(-2px); }
+  .product-card.out-of-stock { opacity:.5; cursor:not-allowed; }
+  .product-emoji { font-size:36px; margin-bottom:8px; display:block; }
+  .product-name { font-size:13px; font-weight:700; margin-bottom:4px; }
+  .product-price { font-size:15px; font-weight:800; color:#16a34a; }
+  .product-stock { font-size:11px; margin-top:4px; font-weight:600; }
+  .stock-ok { color:#16a34a; }
+  .stock-low { color:#d97706; }
+  .stock-out { color:#ef4444; }
+  .add-btn { margin-top:8px; width:100%; background:#16a34a; color:white; border:none; border-radius:8px; padding:7px; font-size:12px; font-weight:700; cursor:pointer; }
+  .add-btn:hover { background:#15803d; }
+  /* Cart panel */
+  .cart { width:340px; background:white; border-left:2px solid #d1fae5; display:flex; flex-direction:column; }
+  .cart-header { padding:14px 16px; border-bottom:1px solid #d1fae5; display:flex; align-items:center; justify-content:space-between; }
+  .cart-title { font-size:15px; font-weight:800; }
+  .cart-receipt { font-size:11px; color:#94a3b8; font-family:monospace; }
+  .cart-items { flex:1; overflow-y:auto; }
+  .empty-cart { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; padding:40px; text-align:center; }
+  .cart-item { padding:12px 16px; border-bottom:1px solid #f0fdf4; }
+  .ci-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .ci-name { font-size:13px; font-weight:700; flex:1; }
+  .ci-price { font-size:13px; font-weight:700; color:#16a34a; }
+  .ci-row2 { display:flex; align-items:center; gap:8px; }
+  .qty-ctrl { display:flex; align-items:center; gap:0; border:1px solid #d1fae5; border-radius:8px; overflow:hidden; }
+  .qty-btn { background:#f0fdf4; border:none; width:30px; height:30px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .qty-btn:hover { background:#dcfce7; }
+  .qty-val { font-size:14px; font-weight:700; padding:0 10px; min-width:36px; text-align:center; }
+  .ci-subtotal { margin-left:auto; font-size:14px; font-weight:800; color:#1c1917; }
+  .ci-remove { background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer; padding:2px 6px; }
+  .ci-note { flex:1; border:none; background:#f0fdf4; border-radius:6px; padding:5px 8px; font-size:11px; color:#64748b; outline:none; }
+  /* Discount & summary */
+  .discount-row { padding:12px 16px; border-bottom:1px solid #d1fae5; display:flex; gap:8px; }
+  .discount-input { flex:1; border:1px solid #d1fae5; border-radius:8px; padding:8px 10px; font-size:13px; }
+  .discount-btn { background:#fbbf24; border:none; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer; color:white; }
+  /* Payment panel */
+  .payment-panel { padding:14px 16px; border-top:2px solid #d1fae5; background:#f0fdf4; }
+  .summary-rows { margin-bottom:12px; }
+  .summary-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; }
+  .summary-row.total { font-size:18px; font-weight:800; border-top:2px solid #d1fae5; padding-top:8px; margin-top:4px; }
+  .summary-row.total .label { color:#1c1917; }
+  .summary-row.total .amount { color:#16a34a; }
+  .summary-row.discount { color:#16a34a; }
+  .payment-methods { display:flex; gap:6px; margin-bottom:12px; }
+  .pm-btn { flex:1; padding:8px 6px; border-radius:8px; border:2px solid #d1fae5; background:white; font-size:12px; font-weight:600; cursor:pointer; text-align:center; color:#64748b; }
+  .pm-btn.active { border-color:#16a34a; background:#ecfdf5; color:#16a34a; }
+  .paid-row { display:flex; gap:8px; margin-bottom:8px; align-items:center; }
+  .paid-label { font-size:13px; font-weight:600; min-width:64px; }
+  .paid-input { flex:1; border:2px solid #16a34a; border-radius:8px; padding:10px 12px; font-size:15px; font-weight:700; text-align:right; outline:none; }
+  .change-row { display:flex; justify-content:space-between; font-size:15px; font-weight:700; background:white; border-radius:8px; padding:10px 12px; margin-bottom:10px; }
+  .change-amount { color:#16a34a; }
+  .pay-btn { width:100%; background:#16a34a; color:white; border:none; border-radius:12px; padding:16px; font-size:17px; font-weight:800; cursor:pointer; letter-spacing:.02em; }
+  .pay-btn:hover { background:#15803d; }
+  .pay-btn:disabled { background:#94a3b8; cursor:not-allowed; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div>
+    <div class="topbar-brand">🏪 Toko Makmur Jaya</div>
+    <div class="topbar-meta">Jl. Merdeka No. 123, Jakarta</div>
+  </div>
+  <div class="topbar-right">
+    <div class="time">14:30:25</div>
+    <div class="cashier-btn">👤 Kasir: Admin</div>
+    <div class="cashier-btn">📊 Laporan</div>
+  </div>
+</div>
+<div class="layout">
+  <div class="catalog">
+    <div class="search-bar-row">
+      <input class="search-input" type="text" placeholder="🔍 Cari produk, nama atau SKU...">
+      <button class="barcode-btn">📷 Barcode</button>
+    </div>
+    <div class="cat-tabs">
+      <div class="cat-tab active">🍔 Makanan</div>
+      <div class="cat-tab">🥤 Minuman</div>
+      <div class="cat-tab">🍿 Snack</div>
+      <div class="cat-tab">🔌 Elektronik</div>
+      <div class="cat-tab">🧴 Toiletries</div>
+      <div class="cat-tab">📦 Lainnya</div>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <span class="product-emoji">🍜</span>
+        <div class="product-name">Indomie Goreng</div>
+        <div class="product-price">Rp 3.500</div>
+        <div class="product-stock stock-ok">● Stok: 120</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🥚</span>
+        <div class="product-name">Telur 1 Kg</div>
+        <div class="product-price">Rp 28.000</div>
+        <div class="product-stock stock-ok">● Stok: 45</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🍞</span>
+        <div class="product-name">Roti Tawar Sari Roti</div>
+        <div class="product-price">Rp 18.000</div>
+        <div class="product-stock stock-low">⚠️ Stok: 4</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🧴</span>
+        <div class="product-name">Sabun Mandi 200ml</div>
+        <div class="product-price">Rp 12.000</div>
+        <div class="product-stock stock-ok">● Stok: 88</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🧹</span>
+        <div class="product-name">Sabun Cuci Piring</div>
+        <div class="product-price">Rp 8.500</div>
+        <div class="product-stock stock-ok">● Stok: 32</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🍚</span>
+        <div class="product-name">Beras Setra Ramos 5kg</div>
+        <div class="product-price">Rp 72.000</div>
+        <div class="product-stock stock-low">⚠️ Stok: 2</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card">
+        <span class="product-emoji">🧃</span>
+        <div class="product-name">Susu Ultra UHT 1L</div>
+        <div class="product-price">Rp 19.000</div>
+        <div class="product-stock stock-ok">● Stok: 56</div>
+        <button class="add-btn">＋ Tambah</button>
+      </div>
+      <div class="product-card out-of-stock">
+        <span class="product-emoji">🍫</span>
+        <div class="product-name">Coklat Silverqueen</div>
+        <div class="product-price">Rp 22.000</div>
+        <div class="product-stock stock-out">✗ Habis</div>
+        <button class="add-btn" disabled style="background:#94a3b8;">Habis</button>
+      </div>
+    </div>
+  </div>
+  <div class="cart">
+    <div class="cart-header">
+      <div>
+        <div class="cart-title">🛒 Keranjang (3)</div>
+        <div class="cart-receipt">STR-2025-01-0042</div>
+      </div>
+      <button style="background:#fee2e2;border:none;color:#dc2626;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;font-weight:600;">Batal Semua</button>
+    </div>
+    <div class="cart-items">
+      <div class="cart-item">
+        <div class="ci-row1">
+          <div class="ci-name">Indomie Goreng</div>
+          <div class="ci-price">Rp 3.500</div>
+          <button class="ci-remove">×</button>
+        </div>
+        <div class="ci-row2">
+          <div class="qty-ctrl">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">＋</button>
+          </div>
+          <input class="ci-note" placeholder="Catatan...">
+          <div class="ci-subtotal">Rp 10.500</div>
+        </div>
+      </div>
+      <div class="cart-item">
+        <div class="ci-row1">
+          <div class="ci-name">Telur 1 Kg</div>
+          <div class="ci-price">Rp 28.000</div>
+          <button class="ci-remove">×</button>
+        </div>
+        <div class="ci-row2">
+          <div class="qty-ctrl">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">＋</button>
+          </div>
+          <input class="ci-note" placeholder="Catatan...">
+          <div class="ci-subtotal">Rp 28.000</div>
+        </div>
+      </div>
+      <div class="cart-item">
+        <div class="ci-row1">
+          <div class="ci-name">Beras Setra Ramos 5kg</div>
+          <div class="ci-price">Rp 72.000</div>
+          <button class="ci-remove">×</button>
+        </div>
+        <div class="ci-row2">
+          <div class="qty-ctrl">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">＋</button>
+          </div>
+          <input class="ci-note" placeholder="Catatan...">
+          <div class="ci-subtotal">Rp 72.000</div>
+        </div>
+      </div>
+    </div>
+    <div class="discount-row">
+      <input class="discount-input" type="text" placeholder="Kode diskon atau % diskon...">
+      <button class="discount-btn">Pakai</button>
+    </div>
+    <div class="payment-panel">
+      <div class="summary-rows">
+        <div class="summary-row"><span class="label">Subtotal</span><span>Rp 110.500</span></div>
+        <div class="summary-row discount"><span>Diskon (10%)</span><span>-Rp 11.050</span></div>
+        <div class="summary-row"><span>PPN (11%)</span><span>Rp 10.949</span></div>
+        <div class="summary-row total">
+          <span class="label">Total</span>
+          <span class="amount">Rp 110.399</span>
+        </div>
+      </div>
+      <div class="payment-methods">
+        <button class="pm-btn active">💵<br>Tunai</button>
+        <button class="pm-btn">💳<br>Kartu</button>
+        <button class="pm-btn">📱<br>QRIS</button>
+        <button class="pm-btn">🏦<br>Transfer</button>
+      </div>
+      <div class="paid-row">
+        <span class="paid-label">Dibayar:</span>
+        <input class="paid-input" type="text" value="Rp 150.000">
+      </div>
+      <div class="change-row">
+        <span>Kembalian</span>
+        <span class="change-amount">Rp 39.601</span>
+      </div>
+      <button class="pay-btn">BAYAR (Rp 110.399)</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

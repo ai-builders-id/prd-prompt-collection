@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Management & Collab - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#7c3aed; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:240px; background:#4c1d95; color:white; display:flex; flex-direction:column; padding:12px; }
+  .new-proj-btn { background:white; color:#7c3aed; border:none; border-radius:8px; padding:10px; width:100%; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:12px; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.15); color:white; font-weight:600; }
+  .section-title { font-size:10px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; padding:10px 12px 4px; }
+  .project-item { display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.7); margin-bottom:2px; }
+  .project-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .project-item.active { background:rgba(255,255,255,.15); color:white; }
+  .proj-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .proj-progress { font-size:10px; color:rgba(255,255,255,.4); margin-left:auto; }
+  .team-section { margin-top:auto; padding:12px; border-top:1px solid rgba(255,255,255,.15); }
+  .team-title { font-size:10px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+  .team-avatars { display:flex; gap:-6px; }
+  .team-avatar { width:28px; height:28px; border-radius:50%; border:2px solid #4c1d95; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:white; }
+  .online-dot { width:8px; height:8px; background:#4ade80; border-radius:50%; border:1px solid #4c1d95; position:absolute; bottom:0; right:0; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .main-header { background:white; border-bottom:1px solid #e2e8f0; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .main-title { font-size:17px; font-weight:700; }
+  .proj-meta { font-size:12px; color:#64748b; margin-top:2px; display:flex; align-items:center; gap:8px; }
+  .view-tabs { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .view-tab { padding:7px 16px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:none; color:#64748b; }
+  .view-tab.active { background:#7c3aed; color:white; }
+  .btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#7c3aed; color:white; }
+  /* Kanban */
+  .kanban-board { flex:1; overflow-x:auto; padding:16px 20px; display:flex; gap:14px; }
+  .kanban-col { min-width:280px; max-width:280px; background:#f1f5f9; border-radius:12px; display:flex; flex-direction:column; overflow:hidden; }
+  .col-header { padding:12px 14px; display:flex; align-items:center; justify-content:space-between; }
+  .col-title { font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .col-count { background:rgba(0,0,0,.1); font-size:11px; padding:2px 8px; border-radius:999px; font-weight:700; }
+  .col-cards { padding:8px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; min-height:200px; }
+  .task-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:12px; cursor:pointer; transition:box-shadow .15s; }
+  .task-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.1); border-color:#c4b5fd; }
+  .task-card.selected { border-color:#7c3aed; }
+  .tc-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:8px; }
+  .tc-title { font-size:13px; font-weight:700; flex:1; }
+  .tc-priority { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+  .p-urgent { background:#ef4444; }
+  .p-high { background:#f97316; }
+  .p-medium { background:#3b82f6; }
+  .p-low { background:#94a3b8; }
+  .tc-labels { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
+  .tc-label { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:600; }
+  .tc-meta { display:flex; align-items:center; gap:8px; font-size:11px; color:#94a3b8; }
+  .tc-assignee { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:white; }
+  .tc-checklist { font-size:11px; color:#94a3b8; }
+  .tc-date { font-size:11px; }
+  .tc-date.overdue { color:#ef4444; font-weight:600; }
+  .tc-date.due-soon { color:#d97706; font-weight:600; }
+  .tc-icons { display:flex; gap:6px; margin-left:auto; }
+  .add-task-btn { margin:8px; background:none; border:none; color:#94a3b8; font-size:13px; cursor:pointer; padding:8px; border-radius:8px; text-align:left; width:calc(100% - 16px); }
+  .add-task-btn:hover { background:#e2e8f0; color:#1e293b; }
+  /* Task detail panel */
+  .task-detail { width:360px; background:white; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; }
+  .td-header { padding:16px; border-bottom:1px solid #e2e8f0; }
+  .td-status-bar { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .td-title { font-size:16px; font-weight:700; margin-bottom:8px; border:none; width:100%; resize:none; font-family:inherit; color:#1e293b; }
+  .td-section { padding:12px 16px; border-bottom:1px solid #f1f5f9; }
+  .td-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .td-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .td-meta-item { }
+  .td-meta-label { font-size:11px; color:#94a3b8; margin-bottom:3px; }
+  .td-meta-value { font-size:13px; font-weight:500; }
+  .td-select { border:1px solid #e2e8f0; border-radius:6px; padding:5px 8px; font-size:13px; width:100%; background:white; }
+  .checklist-item { display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid #f8fafc; }
+  .checklist-check { width:16px; height:16px; border:2px solid #c4b5fd; border-radius:4px; cursor:pointer; flex-shrink:0; }
+  .checklist-check.checked { background:#7c3aed; border-color:#7c3aed; display:flex; align-items:center; justify-content:center; font-size:10px; color:white; }
+  .checklist-text { font-size:13px; flex:1; }
+  .checklist-text.done { text-decoration:line-through; color:#94a3b8; }
+  .comment-area { padding:14px 16px; }
+  .comment-item { display:flex; gap:8px; margin-bottom:12px; }
+  .comment-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:white; flex-shrink:0; }
+  .comment-bubble { background:#f8fafc; border-radius:10px; padding:10px 12px; flex:1; font-size:13px; }
+  .comment-meta { font-size:11px; color:#94a3b8; margin-top:4px; }
+  .comment-input-row { display:flex; gap:8px; }
+  .comment-input { flex:1; border:1px solid #e2e8f0; border-radius:8px; padding:9px 12px; font-size:13px; outline:none; }
+  .comment-input:focus { border-color:#c4b5fd; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>📋 Project Management & Collaboration</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="search" placeholder="🔍 Cari tugas, project..." style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:white;font-size:13px;width:200px;">
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">🔔</div>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <button class="new-proj-btn">＋ Buat Project Baru</button>
+    <div class="nav-item active">🏠 Home</div>
+    <div class="nav-item">📋 My Tasks</div>
+    <div class="nav-item">📅 Calendar</div>
+    <div class="section-title">Projects</div>
+    <div class="project-item active">
+      <div class="proj-dot" style="background:#7c3aed;"></div>
+      Website Redesign
+      <span class="proj-progress">47%</span>
+    </div>
+    <div class="project-item">
+      <div class="proj-dot" style="background:#0ea5e9;"></div>
+      Mobile App MVP
+      <span class="proj-progress">68%</span>
+    </div>
+    <div class="project-item">
+      <div class="proj-dot" style="background:#059669;"></div>
+      API Integration
+      <span class="proj-progress">25%</span>
+    </div>
+    <div class="project-item">
+      <div class="proj-dot" style="background:#f59e0b;"></div>
+      Brand Refresh
+      <span class="proj-progress">90%</span>
+    </div>
+    <div class="section-title">Filter</div>
+    <div class="nav-item">⭐ Favorites</div>
+    <div class="nav-item">📁 My Projects</div>
+    <div class="nav-item">🗂️ Archived</div>
+    <div class="team-section">
+      <div class="team-title">Tim Online (4)</div>
+      <div style="display:flex;gap:4px;">
+        <div class="team-avatar" style="background:#7c3aed;position:relative;">A<div class="online-dot"></div></div>
+        <div class="team-avatar" style="background:#0ea5e9;position:relative;">B<div class="online-dot"></div></div>
+        <div class="team-avatar" style="background:#059669;position:relative;">C<div class="online-dot"></div></div>
+        <div class="team-avatar" style="background:#f59e0b;position:relative;">D<div class="online-dot"></div></div>
+        <div class="team-avatar" style="background:#64748b;">+3</div>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <div class="main-title">🟣 Website Redesign</div>
+        <div class="proj-meta">
+          <span>Jan 2025 – Mar 2025</span>
+          <span>·</span>
+          <span>17 tugas · 8 selesai (47%)</span>
+          <span>·</span>
+          <span>👥 Ami, Budi, Citra, Deni</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="view-tabs">
+          <button class="view-tab active">Kanban</button>
+          <button class="view-tab">List</button>
+          <button class="view-tab">Timeline</button>
+        </div>
+        <button class="btn btn-primary">＋ Tambah Tugas</button>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;overflow:hidden;">
+      <div class="kanban-board">
+        <!-- To Do Column -->
+        <div class="kanban-col">
+          <div class="col-header" style="background:#fef3c7;">
+            <div class="col-title">📋 To Do <span class="col-count">4</span></div>
+            <button style="background:none;border:none;font-size:16px;cursor:pointer;color:#64748b;">⋯</button>
+          </div>
+          <div class="col-cards">
+            <div class="task-card selected">
+              <div class="tc-header">
+                <div class="tc-title">Setup Database Schema</div>
+                <div class="tc-priority p-high"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#dbeafe;color:#2563eb;">backend</span>
+                <span class="tc-label" style="background:#d1fae5;color:#059669;">database</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#7c3aed;">A</div>
+                <span class="tc-checklist">☑ 1/4</span>
+                <span>📎 2</span>
+                <span>💬 5</span>
+                <span class="tc-date overdue">⚠️ 25 Jan</span>
+              </div>
+            </div>
+            <div class="task-card">
+              <div class="tc-header">
+                <div class="tc-title">Design Mobile Responsive Layout</div>
+                <div class="tc-priority p-medium"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#f3e8ff;color:#7c3aed;">frontend</span>
+                <span class="tc-label" style="background:#fef3c7;color:#d97706;">design</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#0ea5e9;">B</div>
+                <span class="tc-checklist">☑ 0/3</span>
+                <span>💬 2</span>
+                <span class="tc-date">📅 28 Jan</span>
+              </div>
+            </div>
+            <div class="task-card">
+              <div class="tc-header">
+                <div class="tc-title">Write Unit Tests for Auth Module</div>
+                <div class="tc-priority p-low"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#d1fae5;color:#059669;">testing</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#059669;">C</div>
+                <span>📎 1</span>
+                <span class="tc-date">📅 30 Jan</span>
+              </div>
+            </div>
+          </div>
+          <button class="add-task-btn">＋ Tambah tugas</button>
+        </div>
+        <!-- In Progress Column -->
+        <div class="kanban-col">
+          <div class="col-header" style="background:#dbeafe;">
+            <div class="col-title">🔵 In Progress <span class="col-count">3</span></div>
+            <button style="background:none;border:none;font-size:16px;cursor:pointer;color:#64748b;">⋯</button>
+          </div>
+          <div class="col-cards">
+            <div class="task-card">
+              <div class="tc-header">
+                <div class="tc-title">Implement Login Flow</div>
+                <div class="tc-priority p-urgent"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#dbeafe;color:#2563eb;">backend</span>
+                <span class="tc-label" style="background:#fee2e2;color:#dc2626;">auth</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#f59e0b;">D</div>
+                <span class="tc-checklist">☑ 3/5</span>
+                <span>💬 8</span>
+                <span class="tc-date due-soon">⏰ 27 Jan</span>
+              </div>
+            </div>
+            <div class="task-card">
+              <div class="tc-header">
+                <div class="tc-title">Homepage Hero Section</div>
+                <div class="tc-priority p-high"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#f3e8ff;color:#7c3aed;">frontend</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#0ea5e9;">B</div>
+                <span>💬 3</span>
+                <span class="tc-date">📅 26 Jan</span>
+              </div>
+            </div>
+          </div>
+          <button class="add-task-btn">＋ Tambah tugas</button>
+        </div>
+        <!-- Review Column -->
+        <div class="kanban-col">
+          <div class="col-header" style="background:#f3e8ff;">
+            <div class="col-title">🔍 Review <span class="col-count">2</span></div>
+            <button style="background:none;border:none;font-size:16px;cursor:pointer;color:#64748b;">⋯</button>
+          </div>
+          <div class="col-cards">
+            <div class="task-card">
+              <div class="tc-header">
+                <div class="tc-title">QA Testing: Checkout Flow</div>
+                <div class="tc-priority p-high"></div>
+              </div>
+              <div class="tc-labels">
+                <span class="tc-label" style="background:#d1fae5;color:#059669;">testing</span>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#059669;">C</div>
+                <span>💬 5</span>
+                <span class="tc-date">📅 28 Jan</span>
+              </div>
+            </div>
+          </div>
+          <button class="add-task-btn">＋ Tambah tugas</button>
+        </div>
+        <!-- Done Column -->
+        <div class="kanban-col">
+          <div class="col-header" style="background:#d1fae5;">
+            <div class="col-title">✅ Done <span class="col-count">8</span></div>
+            <button style="background:none;border:none;font-size:16px;cursor:pointer;color:#64748b;">⋯</button>
+          </div>
+          <div class="col-cards">
+            <div class="task-card" style="opacity:.7;">
+              <div class="tc-header">
+                <div class="tc-title" style="text-decoration:line-through;color:#94a3b8;">Project Setup & Config</div>
+                <div class="tc-priority p-low"></div>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#7c3aed;">A</div>
+                <span style="color:#059669;font-size:11px;">✅ Selesai 10 Jan</span>
+              </div>
+            </div>
+            <div class="task-card" style="opacity:.7;">
+              <div class="tc-header">
+                <div class="tc-title" style="text-decoration:line-through;color:#94a3b8;">Wireframe Design Review</div>
+                <div class="tc-priority p-medium"></div>
+              </div>
+              <div class="tc-meta">
+                <div class="tc-assignee" style="background:#f59e0b;">D</div>
+                <span style="color:#059669;font-size:11px;">✅ Selesai 12 Jan</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="task-detail">
+        <div class="td-header">
+          <div class="td-status-bar">
+            <span style="background:#fef3c7;color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">To Do</span>
+            <span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">🟠 High</span>
+            <button style="margin-left:auto;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;">×</button>
+          </div>
+          <textarea class="td-title" rows="2">Setup Database Schema</textarea>
+          <div style="font-size:12px;color:#94a3b8;">Website Redesign · T-001 · Dibuat 10 Jan 2025</div>
+        </div>
+        <div class="td-section">
+          <div class="td-meta-grid">
+            <div class="td-meta-item">
+              <div class="td-meta-label">Assignee</div>
+              <select class="td-select"><option>👤 Ami</option><option>Budi</option><option>Citra</option></select>
+            </div>
+            <div class="td-meta-item">
+              <div class="td-meta-label">Due Date</div>
+              <input type="date" class="td-select" value="2025-01-25">
+            </div>
+            <div class="td-meta-item">
+              <div class="td-meta-label">Priority</div>
+              <select class="td-select"><option>🟠 High</option><option>🔴 Urgent</option><option>🔵 Medium</option></select>
+            </div>
+            <div class="td-meta-item">
+              <div class="td-meta-label">Est. Hours</div>
+              <input type="number" class="td-select" value="8">
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <div class="td-meta-label">Labels</div>
+            <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
+              <span style="background:#dbeafe;color:#2563eb;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;">backend</span>
+              <span style="background:#d1fae5;color:#059669;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;">database</span>
+              <button style="background:none;border:1px dashed #e2e8f0;border-radius:4px;padding:2px 8px;font-size:11px;color:#94a3b8;cursor:pointer;">＋</button>
+            </div>
+          </div>
+        </div>
+        <div class="td-section">
+          <div class="td-section-title">📝 Deskripsi</div>
+          <div style="font-size:13px;color:#475569;line-height:1.6;">Create PostgreSQL database schema with tables for users, products, orders, and reviews. Include proper indexes and foreign key constraints.</div>
+        </div>
+        <div class="td-section">
+          <div class="td-section-title">☑ Checklist (1/4)</div>
+          <div style="height:4px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-bottom:10px;">
+            <div style="height:100%;width:25%;background:#7c3aed;border-radius:999px;"></div>
+          </div>
+          <div class="checklist-item"><div class="checklist-check checked">✓</div><div class="checklist-text done">Install PostgreSQL</div></div>
+          <div class="checklist-item"><div class="checklist-check"></div><div class="checklist-text">Configure user roles</div></div>
+          <div class="checklist-item"><div class="checklist-check"></div><div class="checklist-text">Create migration files</div></div>
+          <div class="checklist-item"><div class="checklist-check"></div><div class="checklist-text">Seed test data</div></div>
+          <button style="background:none;border:none;color:#7c3aed;font-size:13px;cursor:pointer;margin-top:8px;">＋ Tambah item</button>
+        </div>
+        <div class="comment-area">
+          <div class="td-section-title">💬 Aktivitas (5)</div>
+          <div class="comment-item">
+            <div class="comment-avatar" style="background:#7c3aed;">A</div>
+            <div>
+              <div class="comment-bubble">Sudah selesai install PostgreSQL dan set up development environment. Lanjut ke schema design.</div>
+              <div class="comment-meta">Ami · 12 Jan 2025</div>
+            </div>
+          </div>
+          <div class="comment-item">
+            <div class="comment-avatar" style="background:#0ea5e9;">B</div>
+            <div>
+              <div class="comment-bubble">Jangan lupa tambahkan index untuk kolom yang sering di-query ya, biar performanya bagus.</div>
+              <div class="comment-meta">Budi · 13 Jan 2025</div>
+            </div>
+          </div>
+          <div class="comment-input-row">
+            <div class="comment-avatar" style="background:#f59e0b;">D</div>
+            <input class="comment-input" placeholder="Tulis komentar...">
+            <button style="background:#7c3aed;border:none;color:white;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

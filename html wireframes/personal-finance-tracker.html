@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Finance Tracker - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; }
+  .logo { font-size:18px; font-weight:800; color:#059669; }
+  .date-range { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .dr-btn { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .dr-btn.active { background:#059669; color:white; }
+  .user-btn { display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; }
+  .user-avatar { width:30px; height:30px; border-radius:50%; background:#059669; color:white; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  /* Left sidebar */
+  .left-panel { width:240px; background:white; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; }
+  .lp-section { padding:16px 16px 8px; }
+  .lp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+  .type-toggle { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; margin-bottom:14px; }
+  .type-btn { flex:1; padding:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:none; color:#64748b; text-align:center; }
+  .type-btn.income { background:#059669; color:white; }
+  .type-btn.expense { background:#ef4444; color:white; }
+  .cat-item { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; cursor:pointer; font-size:13px; color:#475569; margin-bottom:2px; }
+  .cat-item:hover { background:#f8fafc; }
+  .cat-item.active { background:#ecfdf5; color:#059669; font-weight:600; }
+  .cat-icon { font-size:16px; }
+  .cat-count { margin-left:auto; font-size:11px; color:#94a3b8; }
+  .date-selector { margin:0 16px 12px; }
+  .date-selector select { width:100%; border:1px solid #e2e8f0; border-radius:8px; padding:8px 10px; font-size:13px; background:white; }
+  /* Center: transactions */
+  .center-panel { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .center-header { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .center-header h2 { font-size:15px; font-weight:700; }
+  .fab { background:#059669; color:white; border:none; border-radius:999px; padding:10px 18px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(5,150,105,.3); }
+  .transactions { flex:1; overflow-y:auto; padding:16px 20px; }
+  .date-group { margin-bottom:16px; }
+  .date-label { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #f1f5f9; }
+  .tx-card { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:border-color .15s; }
+  .tx-card:hover { border-color:#6ee7b7; transform:scale(1.005); }
+  .tx-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .tx-main { flex:1; }
+  .tx-note { font-size:14px; font-weight:600; }
+  .tx-cat { font-size:12px; color:#64748b; margin-top:2px; display:flex; align-items:center; gap:4px; }
+  .tx-cat-pill { background:#f1f5f9; color:#475569; font-size:10px; padding:1px 6px; border-radius:999px; }
+  .tx-amount { font-size:16px; font-weight:800; tabular-nums; }
+  .tx-income { color:#059669; }
+  .tx-expense { color:#ef4444; }
+  /* Right panel: charts & insights */
+  .right-panel { width:300px; background:white; border-left:1px solid #e2e8f0; overflow-y:auto; padding:16px; }
+  .summary-cards { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+  .summary-card { border-radius:12px; padding:14px 16px; }
+  .sc-income { background:#ecfdf5; border:1px solid #6ee7b7; }
+  .sc-expense { background:#fef2f2; border:1px solid #fca5a5; }
+  .sc-balance { background:#eff6ff; border:1px solid #93c5fd; }
+  .sc-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .sc-label.income { color:#059669; }
+  .sc-label.expense { color:#ef4444; }
+  .sc-label.balance { color:#2563eb; }
+  .sc-value { font-size:22px; font-weight:800; }
+  .sc-trend { font-size:11px; margin-top:4px; }
+  .trend-up-green { color:#059669; }
+  .trend-up-red { color:#ef4444; }
+  .chart-section { margin-bottom:20px; }
+  .chart-section-title { font-size:13px; font-weight:700; margin-bottom:12px; color:#1e293b; }
+  /* Fake pie chart */
+  .pie-mock { width:100px; height:100px; border-radius:50%; background:conic-gradient(#f97316 0% 30%, #ef4444 30% 55%, #8b5cf6 55% 70%, #0ea5e9 70% 82%, #059669 82% 95%, #94a3b8 95% 100%); margin:0 auto 12px; }
+  .legend-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+  .legend-item { display:flex; align-items:center; gap:4px; font-size:11px; color:#475569; }
+  .legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+  /* Fake bar chart */
+  .bar-chart { display:flex; align-items:flex-end; gap:4px; height:80px; padding-bottom:4px; }
+  .bar-pair { display:flex; gap:2px; align-items:flex-end; flex:1; }
+  .bar-i { border-radius:3px 3px 0 0; background:#6ee7b7; cursor:pointer; }
+  .bar-e { border-radius:3px 3px 0 0; background:#fca5a5; cursor:pointer; }
+  .bar-chart-labels { display:flex; gap:4px; }
+  .bar-chart-label { flex:1; text-align:center; font-size:9px; color:#94a3b8; }
+  .insight-card { background:#fefce8; border:1px solid #fde68a; border-radius:10px; padding:12px; margin-bottom:8px; }
+  .ic-title { font-size:12px; font-weight:700; color:#d97706; margin-bottom:4px; }
+  .ic-text { font-size:12px; color:#92400e; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">💰 FinanceTrack</div>
+  <div class="date-range">
+    <button class="dr-btn">Harian</button>
+    <button class="dr-btn">Mingguan</button>
+    <button class="dr-btn active">Bulanan</button>
+  </div>
+  <div class="user-btn">
+    <div class="user-avatar">J</div>
+    <span style="font-size:13px;">Jane · Jan 2025</span>
+  </div>
+</div>
+<div class="app">
+  <div class="left-panel">
+    <div class="lp-section">
+      <div class="type-toggle">
+        <button class="type-btn expense">Pengeluaran</button>
+        <button class="type-btn income" style="background:#059669;">Pemasukan</button>
+      </div>
+      <div class="lp-section-title">Kategori Pengeluaran</div>
+      <div class="cat-item active"><span class="cat-icon">🍔</span> Makan <span class="cat-count">12 transaksi</span></div>
+      <div class="cat-item"><span class="cat-icon">🏠</span> Rumah <span class="cat-count">3</span></div>
+      <div class="cat-item"><span class="cat-icon">🚗</span> Bensin <span class="cat-count">8</span></div>
+      <div class="cat-item"><span class="cat-icon">👗</span> Baju <span class="cat-count">4</span></div>
+      <div class="cat-item"><span class="cat-icon">🎉</span> Rekreasi <span class="cat-count">6</span></div>
+      <div class="cat-item"><span class="cat-icon">☕</span> Kafe <span class="cat-count">9</span></div>
+      <div class="cat-item"><span class="cat-icon">📱</span> Internet <span class="cat-count">1</span></div>
+      <div class="cat-item"><span class="cat-icon">📚</span> Sekolah <span class="cat-count">2</span></div>
+      <div class="cat-item"><span class="cat-icon">💊</span> Kesehatan <span class="cat-count">3</span></div>
+      <div class="cat-item"><span class="cat-icon">🛒</span> Lainnya <span class="cat-count">7</span></div>
+    </div>
+    <div class="date-selector">
+      <select><option>Januari 2025</option><option>Desember 2024</option><option>November 2024</option></select>
+    </div>
+    <div class="lp-section">
+      <div class="lp-section-title">Kategori Pemasukan</div>
+      <div class="cat-item"><span class="cat-icon">💼</span> Gaji <span class="cat-count">1</span></div>
+      <div class="cat-item"><span class="cat-icon">💰</span> Investasi <span class="cat-count">3</span></div>
+      <div class="cat-item"><span class="cat-icon">🎁</span> Hadiah <span class="cat-count">1</span></div>
+    </div>
+  </div>
+  <div class="center-panel">
+    <div class="center-header">
+      <div>
+        <h2>Transaksi — Januari 2025</h2>
+        <div style="font-size:12px;color:#64748b;margin-top:2px;">55 transaksi · Filter: Makan</div>
+      </div>
+      <button class="fab">＋ Catat Transaksi</button>
+    </div>
+    <div class="transactions">
+      <div class="date-group">
+        <div class="date-label">Hari Ini, 15 Januari 2025</div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#fef3c7;">🍔</div>
+          <div class="tx-main">
+            <div class="tx-note">Makan siang di Warteg</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Primer</span><span class="tx-cat-pill">Makan</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 25.000</div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#dbeafe;">💼</div>
+          <div class="tx-main">
+            <div class="tx-note">Gaji Januari 2025</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Utama</span><span class="tx-cat-pill">Gaji</span></div>
+          </div>
+          <div class="tx-amount tx-income">+Rp 8.000.000</div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#f3e8ff;">☕</div>
+          <div class="tx-main">
+            <div class="tx-note">Kopi di Starbucks</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Tersier</span><span class="tx-cat-pill">Kafe</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 65.000</div>
+        </div>
+      </div>
+      <div class="date-group">
+        <div class="date-label">Kemarin, 14 Januari 2025</div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#fef3c7;">🍜</div>
+          <div class="tx-main">
+            <div class="tx-note">Makan malam bersama keluarga</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Primer</span><span class="tx-cat-pill">Makan</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 180.000</div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#d1fae5;">💰</div>
+          <div class="tx-main">
+            <div class="tx-note">Dividen reksa dana</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Sekunder</span><span class="tx-cat-pill">Investasi</span></div>
+          </div>
+          <div class="tx-amount tx-income">+Rp 250.000</div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#fee2e2;">🚗</div>
+          <div class="tx-main">
+            <div class="tx-note">Isi bensin Full Tank</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Primer</span><span class="tx-cat-pill">Bensin</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 120.000</div>
+        </div>
+      </div>
+      <div class="date-group">
+        <div class="date-label">13 Januari 2025</div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#e0e7ff;">💡</div>
+          <div class="tx-main">
+            <div class="tx-note">Tagihan Listrik Januari</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Primer</span><span class="tx-cat-pill">Listrik</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 350.000</div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-icon" style="background:#fef3c7;">🍔</div>
+          <div class="tx-main">
+            <div class="tx-note">Makan siang kantor</div>
+            <div class="tx-cat"><span class="tx-cat-pill">Primer</span><span class="tx-cat-pill">Makan</span></div>
+          </div>
+          <div class="tx-amount tx-expense">-Rp 35.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="summary-cards">
+      <div class="summary-card sc-income">
+        <div class="sc-label income">Total Pemasukan</div>
+        <div class="sc-value" style="color:#059669;">Rp 8.750.000</div>
+        <div class="sc-trend trend-up-green">▲ +12% vs bulan lalu</div>
+      </div>
+      <div class="summary-card sc-expense">
+        <div class="sc-label expense">Total Pengeluaran</div>
+        <div class="sc-value" style="color:#ef4444;">Rp 3.240.000</div>
+        <div class="sc-trend trend-up-red">▲ +8% vs bulan lalu</div>
+      </div>
+      <div class="summary-card sc-balance">
+        <div class="sc-label balance">Saldo Bersih</div>
+        <div class="sc-value" style="color:#2563eb;">Rp 5.510.000</div>
+        <div class="sc-trend trend-up-green">✓ On track</div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title">🍩 Pengeluaran per Kategori</div>
+      <div class="pie-mock"></div>
+      <div class="legend-grid">
+        <div class="legend-item"><div class="legend-dot" style="background:#f97316;"></div> Makan 30%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div> Rumah 25%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div> Bensin 15%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0ea5e9;"></div> Kafe 12%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#059669;"></div> Sekolah 5%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#94a3b8;"></div> Lainnya 13%</div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title">📊 Pemasukan vs Pengeluaran (7 hari)</div>
+      <div class="bar-chart">
+        <div class="bar-pair"><div class="bar-i" style="height:60%;"></div><div class="bar-e" style="height:35%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:20%;"></div><div class="bar-e" style="height:45%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:85%;"></div><div class="bar-e" style="height:30%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:15%;"></div><div class="bar-e" style="height:55%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:40%;"></div><div class="bar-e" style="height:65%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:25%;"></div><div class="bar-e" style="height:40%;"></div></div>
+        <div class="bar-pair"><div class="bar-i" style="height:50%;"></div><div class="bar-e" style="height:75%;"></div></div>
+      </div>
+      <div class="bar-chart-labels" style="display:flex;gap:4px;">
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Sen</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Sel</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Rab</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Kam</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Jum</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Sab</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:#94a3b8;">Min</div>
+      </div>
+      <div style="display:flex;gap:10px;font-size:11px;margin-top:6px;">
+        <span><span style="color:#059669;font-weight:700;">█</span> Pemasukan</span>
+        <span><span style="color:#ef4444;font-weight:700;">█</span> Pengeluaran</span>
+      </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title">💡 Insight</div>
+      <div class="insight-card">
+        <div class="ic-title">⚠️ Kafe Melebihi Budget</div>
+        <div class="ic-text">Pengeluaran kafe bulan ini Rp 585.000, melebihi budget Rp 400.000. Pertimbangkan mengurangi frekuensi.</div>
+      </div>
+      <div class="insight-card" style="background:#f0fdf4;border-color:#6ee7b7;">
+        <div class="ic-title" style="color:#059669;">✅ Tabungan On Track</div>
+        <div class="ic-text" style="color:#065f46;">Kamu sudah menabung Rp 2,5 jt dari target Rp 2 jt bulan ini. Great job!</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

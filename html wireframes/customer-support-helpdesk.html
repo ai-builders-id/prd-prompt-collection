@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Support & Helpdesk - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f1f5f9; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#2563eb; color:white; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#1e40af; display:flex; flex-direction:column; color:white; }
+  .new-btn { margin:12px; background:white; color:#1e40af; border:none; border-radius:8px; padding:10px; font-size:13px; font-weight:700; cursor:pointer; }
+  .new-btn:hover { background:#dbeafe; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.75); }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.2); color:white; font-weight:600; }
+  .nav-icon { font-size:16px; }
+  .nav-badge { margin-left:auto; background:#ef4444; color:white; font-size:10px; padding:1px 6px; border-radius:999px; min-width:18px; text-align:center; }
+  .sidebar-divider { height:1px; background:rgba(255,255,255,.15); margin:8px 16px; }
+  .agent-list { padding:12px 16px; }
+  .agent-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.5); margin-bottom:8px; }
+  .agent-item { display:flex; align-items:center; gap:8px; padding:5px 0; font-size:12px; color:rgba(255,255,255,.7); }
+  .agent-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .view-toggle { display:flex; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .view-btn { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .view-btn.active { background:#2563eb; color:white; }
+  .filter-row { display:flex; gap:6px; align-items:center; margin-top:8px; }
+  .filter-chip { background:#f1f5f9; border:1px solid #e2e8f0; color:#64748b; border-radius:999px; padding:3px 12px; font-size:12px; cursor:pointer; }
+  .filter-chip.active { background:#dbeafe; color:#2563eb; border-color:#93c5fd; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#2563eb; color:white; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .ticket-list { flex:1; overflow-y:auto; }
+  table { width:100%; border-collapse:collapse; background:white; }
+  th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; background:#f8fafc; border-bottom:1px solid #e2e8f0; position:sticky; top:0; }
+  td { padding:12px 14px; border-bottom:1px solid #f1f5f9; font-size:13px; vertical-align:middle; }
+  tr:hover td { background:#f8fafc; cursor:pointer; }
+  tr.selected td { background:#eff6ff; }
+  .priority-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .p-urgent { background:#ef4444; }
+  .p-high { background:#f97316; }
+  .p-medium { background:#eab308; }
+  .p-low { background:#94a3b8; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .s-open { background:#dbeafe; color:#2563eb; }
+  .s-progress { background:#fef3c7; color:#d97706; }
+  .s-pending { background:#f3e8ff; color:#7c3aed; }
+  .s-resolved { background:#d1fae5; color:#059669; }
+  .s-closed { background:#f1f5f9; color:#64748b; }
+  .src-icon { font-size:14px; }
+  /* Ticket Detail */
+  .ticket-detail { width:400px; background:white; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; overflow:hidden; }
+  .td-header { padding:14px 16px; border-bottom:1px solid #e2e8f0; }
+  .td-ticket-id { font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+  .td-subject { font-size:15px; font-weight:700; margin-top:4px; }
+  .td-meta { display:flex; gap:6px; align-items:center; margin-top:8px; flex-wrap:wrap; }
+  .td-body { flex:1; overflow-y:auto; }
+  .customer-card { padding:14px 16px; border-bottom:1px solid #f1f5f9; display:flex; gap:10px; }
+  .c-avatar { width:40px; height:40px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; flex-shrink:0; }
+  .c-name { font-size:14px; font-weight:700; }
+  .c-meta { font-size:12px; color:#64748b; }
+  .conv-area { padding:14px 16px; flex:1; }
+  .conv-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+  .msg { margin-bottom:14px; display:flex; gap:8px; }
+  .msg.agent { flex-direction:row-reverse; }
+  .msg-avatar { width:28px; height:28px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+  .msg-avatar.agent-av { background:#2563eb; color:white; }
+  .msg-bubble { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px 12px; font-size:13px; line-height:1.5; max-width:260px; }
+  .msg.agent .msg-bubble { background:#eff6ff; border-color:#bfdbfe; }
+  .msg-time { font-size:11px; color:#94a3b8; margin-top:4px; text-align:right; }
+  .internal-note { background:#fef3c7; border:1px solid #fde68a; border-radius:12px; padding:10px 12px; font-size:12px; margin-bottom:12px; }
+  .internal-label { font-size:10px; font-weight:700; color:#d97706; text-transform:uppercase; margin-bottom:4px; }
+  .reply-area { padding:12px 16px; border-top:1px solid #e2e8f0; }
+  .reply-input { width:100%; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; font-size:13px; resize:none; min-height:70px; outline:none; }
+  .reply-input:focus { border-color:#93c5fd; }
+  .reply-actions { display:flex; gap:6px; margin-top:8px; align-items:center; }
+  .reply-mode { font-size:12px; color:#64748b; }
+  .sla-card { margin:14px 16px 0; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:10px 12px; }
+  .sla-title { font-size:11px; font-weight:700; color:#c2410c; margin-bottom:6px; }
+  .sla-bar-bg { height:6px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+  .sla-bar-fill { height:100%; background:#f97316; border-radius:999px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🎫 Support & Helpdesk</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span style="font-size:12px;opacity:.85;">12 Tiket Terbuka · 4 Darurat</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">🔔</div>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <button class="new-btn">＋ Buat Tiket Baru</button>
+    <div class="nav-item active"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item"><span class="nav-icon">🎫</span> Tiket <span class="nav-badge">12</span></div>
+    <div class="nav-item"><span class="nav-icon">👥</span> Pelanggan</div>
+    <div class="nav-item"><span class="nav-icon">📚</span> Knowledge Base</div>
+    <div class="nav-item"><span class="nav-icon">📈</span> Laporan</div>
+    <div class="sidebar-divider"></div>
+    <div class="agent-list">
+      <div class="agent-title">Tim Support</div>
+      <div class="agent-item"><div class="agent-dot" style="background:#34d399;"></div> Ahmad (5 tiket)</div>
+      <div class="agent-item"><div class="agent-dot" style="background:#34d399;"></div> Dewi (4 tiket)</div>
+      <div class="agent-item"><div class="agent-dot" style="background:#fbbf24;"></div> Rizky (3 tiket)</div>
+      <div class="agent-item"><div class="agent-dot" style="background:#94a3b8;"></div> Nina (Offline)</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <h2>Daftar Tiket</h2>
+          <div class="view-toggle">
+            <button class="view-btn active">Tabel</button>
+            <button class="view-btn">Kanban</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-chip active">Semua</div>
+          <div class="filter-chip">Open (12)</div>
+          <div class="filter-chip">Diproses (8)</div>
+          <div class="filter-chip">Menunggu (3)</div>
+          <div class="filter-chip">Selesai (45)</div>
+          <input type="search" placeholder="🔍 Cari tiket..." style="border:1px solid #e2e8f0;border-radius:8px;padding:5px 10px;font-size:12px;margin-left:8px;width:180px;">
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary">＋ Tiket Baru</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="ticket-list">
+        <table>
+          <thead>
+            <tr><th>Tiket</th><th>Subjek</th><th>Pelanggan</th><th>Status</th><th>Prioritas</th><th>Assignee</th><th>Sumber</th><th>Waktu</th></tr>
+          </thead>
+          <tbody>
+            <tr class="selected">
+              <td><code style="font-size:11px;">TKT-001</code></td>
+              <td style="max-width:180px;">Tidak bisa login setelah reset password</td>
+              <td>Budi Santoso</td>
+              <td><span class="badge s-open">Terbuka</span></td>
+              <td><span class="priority-dot p-urgent"></span>Darurat</td>
+              <td>Ahmad</td>
+              <td><span class="src-icon">🌐</span> Web</td>
+              <td>2 jam lalu</td>
+            </tr>
+            <tr>
+              <td><code style="font-size:11px;">TKT-002</code></td>
+              <td style="max-width:180px;">Pembayaran gagal saat checkout</td>
+              <td>Siti Rahmi</td>
+              <td><span class="badge s-progress">Diproses</span></td>
+              <td><span class="priority-dot p-high"></span>Tinggi</td>
+              <td>Dewi</td>
+              <td><span class="src-icon">📞</span> Telepon</td>
+              <td>5 jam lalu</td>
+            </tr>
+            <tr>
+              <td><code style="font-size:11px;">TKT-003</code></td>
+              <td style="max-width:180px;">Request fitur: export data ke Excel</td>
+              <td>Ahmad Fauzi</td>
+              <td><span class="badge s-pending">Menunggu</span></td>
+              <td><span class="priority-dot p-medium"></span>Sedang</td>
+              <td>Rizky</td>
+              <td><span class="src-icon">✉️</span> Email</td>
+              <td>1 hari lalu</td>
+            </tr>
+            <tr>
+              <td><code style="font-size:11px;">TKT-004</code></td>
+              <td style="max-width:180px;">Dashboard tidak loading di Firefox</td>
+              <td>Rina Kusuma</td>
+              <td><span class="badge s-open">Terbuka</span></td>
+              <td><span class="priority-dot p-high"></span>Tinggi</td>
+              <td>Ahmad</td>
+              <td><span class="src-icon">💬</span> Chat</td>
+              <td>3 jam lalu</td>
+            </tr>
+            <tr>
+              <td><code style="font-size:11px;">TKT-005</code></td>
+              <td style="max-width:180px;">Butuh panduan integrasi API</td>
+              <td>Doni Prasetyo</td>
+              <td><span class="badge s-resolved">Selesai</span></td>
+              <td><span class="priority-dot p-low"></span>Rendah</td>
+              <td>Dewi</td>
+              <td><span class="src-icon">✉️</span> Email</td>
+              <td>2 hari lalu</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ticket-detail">
+        <div class="td-header">
+          <div class="td-ticket-id">TKT-001 · Terbuka</div>
+          <div class="td-subject">Tidak bisa login setelah reset password</div>
+          <div class="td-meta">
+            <span class="badge s-open">Terbuka</span>
+            <span class="badge" style="background:#fee2e2;color:#dc2626;">🔴 Darurat</span>
+            <span style="font-size:12px;color:#64748b;">Teknis</span>
+          </div>
+        </div>
+        <div class="td-body">
+          <div class="sla-card">
+            <div class="sla-title">⏱ SLA Response — 2 jam tersisa</div>
+            <div class="sla-bar-bg"><div class="sla-bar-fill" style="width:65%;"></div></div>
+          </div>
+          <div class="customer-card" style="margin-top:12px;">
+            <div class="c-avatar">BS</div>
+            <div>
+              <div class="c-name">Budi Santoso</div>
+              <div class="c-meta">budi@company.com · 0812-3456-7890</div>
+              <div class="c-meta">PT Maju Jaya · 5 tiket total</div>
+            </div>
+          </div>
+          <div class="conv-area">
+            <div class="conv-title">Percakapan</div>
+            <div class="msg">
+              <div class="msg-avatar">BS</div>
+              <div>
+                <div class="msg-bubble">Saya sudah reset password tapi masih tidak bisa login. Muncul pesan "Invalid credentials" terus.</div>
+                <div class="msg-time">Hari ini, 09:30</div>
+              </div>
+            </div>
+            <div class="msg agent">
+              <div class="msg-avatar agent-av">A</div>
+              <div>
+                <div class="msg-bubble">Halo Budi, mohon maaf atas inconvenience-nya. Silakan coba reset password melalui link "Lupa Password" di halaman login. Pastikan menggunakan email yang terdaftar.</div>
+                <div class="msg-time">Hari ini, 09:45</div>
+              </div>
+            </div>
+            <div class="internal-note">
+              <div class="internal-label">🔒 Catatan Internal (hanya agen)</div>
+              User kemungkinan sudah expired session. Cek di admin panel apakah ada flag suspicious.
+            </div>
+            <div class="msg">
+              <div class="msg-avatar">BS</div>
+              <div>
+                <div class="msg-bubble">Sudah coba tapi masih error. Ada screenshotnya: [attachment]</div>
+                <div class="msg-time">Hari ini, 10:05</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reply-area">
+          <textarea class="reply-input" placeholder="Tulis balasan..."></textarea>
+          <div class="reply-actions">
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 12px;">Kirim ➤</button>
+            <button class="btn" style="background:#fef3c7;color:#d97706;font-size:12px;padding:6px 12px;border:none;">📝 Catatan Internal</button>
+            <button class="btn" style="background:#d1fae5;color:#059669;font-size:12px;padding:6px 12px;border:none;margin-left:auto;">✅ Selesaikan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Asset Management - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f0fdf4; color:#1c1917; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#0f766e; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#115e59; color:white; display:flex; flex-direction:column; padding:12px; }
+  .stats-mini { background:rgba(255,255,255,.1); border-radius:8px; padding:12px; margin-bottom:12px; }
+  .stats-mini-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .stats-mini-label { color:rgba(255,255,255,.6); }
+  .stats-mini-val { font-weight:700; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.7); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.2); color:white; font-weight:600; }
+  .cat-tree { margin-top:12px; }
+  .cat-title { font-size:10px; font-weight:700; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.08em; padding:6px 12px; }
+  .cat-item { display:flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; }
+  .cat-item:hover { color:white; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #d1fae5; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .filter-chip { background:#f0fdf4; border:1px solid #bbf7d0; color:#065f46; border-radius:999px; padding:4px 12px; font-size:12px; cursor:pointer; }
+  .filter-chip.active { background:#0f766e; color:white; border-color:#0f766e; }
+  .btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#0f766e; color:white; }
+  .btn-secondary { background:white; border:1px solid #d1d5db; color:#374151; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .asset-list { flex:1; overflow-y:auto; }
+  .stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; padding:16px 20px 0; }
+  .stat-card { background:white; border:1px solid #d1fae5; border-radius:10px; padding:14px; border-left:3px solid; }
+  .stat-val { font-size:20px; font-weight:700; }
+  .stat-label { font-size:11px; color:#6b7280; margin-top:2px; }
+  .list-container { padding:14px 20px; }
+  .asset-card { background:white; border:1px solid #d1fae5; border-radius:10px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:flex-start; gap:14px; cursor:pointer; transition:border-color .15s; }
+  .asset-card:hover { border-color:#0f766e; }
+  .asset-card.selected { border-color:#0f766e; background:#f0fdf4; }
+  .asset-code-badge { background:#0f766e; color:white; font-size:11px; font-weight:700; padding:4px 8px; border-radius:6px; white-space:nowrap; font-family:monospace; }
+  .asset-main { flex:1; }
+  .asset-name { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .asset-meta { font-size:12px; color:#6b7280; display:flex; gap:12px; flex-wrap:wrap; }
+  .asset-status { display:flex; align-items:center; gap:4px; font-size:12px; font-weight:600; }
+  .condition-badge { padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .c-excellent { background:#d1fae5; color:#059669; }
+  .c-good { background:#dbeafe; color:#2563eb; }
+  .c-fair { background:#fef3c7; color:#d97706; }
+  .c-poor { background:#fed7aa; color:#c2410c; }
+  .c-damaged { background:#fee2e2; color:#dc2626; }
+  .asset-actions { display:flex; gap:4px; opacity:0; }
+  .asset-card:hover .asset-actions { opacity:1; }
+  .action-btn { background:#f1f5f9; border:none; border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; }
+  /* Right Panel */
+  .right-panel { width:320px; background:white; border-left:1px solid #d1fae5; overflow-y:auto; }
+  .rp-header { padding:16px; border-bottom:1px solid #d1fae5; }
+  .rp-asset-code { font-size:11px; font-weight:700; color:#0f766e; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .rp-asset-name { font-size:16px; font-weight:700; }
+  .rp-img-placeholder { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; height:100px; display:flex; align-items:center; justify-content:center; font-size:36px; margin:10px 0; }
+  .qr-mock { background:#e0e7ff; border-radius:6px; padding:6px; display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#4f46e5; }
+  .rp-section { padding:12px 16px; border-bottom:1px solid #f0fdf4; }
+  .rp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .info-item { }
+  .info-label { font-size:11px; color:#94a3b8; }
+  .info-value { font-size:13px; font-weight:500; margin-top:1px; }
+  .dep-bar { height:6px; background:#e2e8f0; border-radius:999px; overflow:hidden; margin-top:4px; }
+  .dep-fill { height:100%; border-radius:999px; background:#f97316; }
+  /* Maintenance History */
+  .maint-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid #f0fdf4; }
+  .maint-dot { width:8px; height:8px; border-radius:50%; background:#0f766e; margin-top:5px; flex-shrink:0; }
+  .maint-date { font-size:12px; color:#6b7280; }
+  .maint-type { font-size:13px; font-weight:600; }
+  .maint-status { font-size:11px; color:#059669; font-weight:600; }
+  /* WO Card */
+  .wo-card { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+  .wo-num { font-size:11px; font-family:monospace; color:#0f766e; font-weight:700; }
+  .wo-title { font-size:13px; font-weight:600; margin-top:2px; }
+  .wo-meta { font-size:12px; color:#6b7280; margin-top:4px; display:flex; gap:8px; flex-wrap:wrap; }
+  .rp-actions { padding:14px 16px; display:flex; flex-wrap:wrap; gap:6px; }
+  .rp-action-btn { background:#0f766e; color:white; border:none; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600; cursor:pointer; }
+  .rp-action-btn.secondary { background:#f0fdf4; color:#065f46; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🔧 Enterprise Asset Management</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="search" placeholder="🔍 Cari aset, WO..." style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:white;font-size:13px;width:220px;">
+    <span style="font-size:12px;opacity:.8;">1.250 Aset · 12 WO Aktif</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="stats-mini">
+      <div class="stats-mini-row"><span class="stats-mini-label">Total Aset</span><span class="stats-mini-val">1.250</span></div>
+      <div class="stats-mini-row"><span class="stats-mini-label">Aktif</span><span class="stats-mini-val" style="color:#34d399;">1.180</span></div>
+      <div class="stats-mini-row"><span class="stats-mini-label">Maintenance</span><span class="stats-mini-val" style="color:#fbbf24;">12</span></div>
+      <div class="stats-mini-row"><span class="stats-mini-label">WO Overdue</span><span class="stats-mini-val" style="color:#f87171;">3</span></div>
+    </div>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">🔧 Aset</div>
+    <div class="nav-item">📋 Work Order</div>
+    <div class="nav-item">🗓️ Jadwal Maint.</div>
+    <div class="nav-item">📍 Lokasi</div>
+    <div class="nav-item">📈 Laporan</div>
+    <div class="cat-tree">
+      <div class="cat-title">Kategori</div>
+      <div class="cat-item">💻 IT & Server (245)</div>
+      <div class="cat-item">🏭 Mesin (380)</div>
+      <div class="cat-item">🚗 Kendaraan (52)</div>
+      <div class="cat-item">🏢 Fasilitas (180)</div>
+      <div class="cat-item">⚡ Elektronik (393)</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Daftar Aset</h2>
+        <div class="filter-chip active">Semua</div>
+        <div class="filter-chip">Aktif</div>
+        <div class="filter-chip">Maintenance</div>
+        <div class="filter-chip">Overdue WO</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary">Ekspor</button>
+        <button class="btn btn-primary">＋ Tambah Aset</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="asset-list">
+        <div class="stats-row">
+          <div class="stat-card" style="border-left-color:#059669;"><div class="stat-val" style="color:#059669;">1.180</div><div class="stat-label">Aset Aktif</div></div>
+          <div class="stat-card" style="border-left-color:#d97706;"><div class="stat-val" style="color:#d97706;">12</div><div class="stat-label">Dalam Maint.</div></div>
+          <div class="stat-card" style="border-left-color:#dc2626;"><div class="stat-val" style="color:#dc2626;">3</div><div class="stat-label">WO Overdue</div></div>
+          <div class="stat-card" style="border-left-color:#7c3aed;"><div class="stat-val">Rp 18,5 M</div><div class="stat-label">Total Nilai</div></div>
+          <div class="stat-card" style="border-left-color:#0891b2;"><div class="stat-val">25</div><div class="stat-label">WO Bulan Ini</div></div>
+        </div>
+        <div class="list-container">
+          <div class="asset-card selected">
+            <div class="asset-code-badge">AST-001</div>
+            <div class="asset-main">
+              <div class="asset-name">Server Dell PowerEdge R750</div>
+              <div class="asset-meta">
+                <span>IT · Server</span>
+                <span>Lokasi: DC-01 / Rack A3</span>
+                <span>Dept: IT</span>
+                <span>Budi Santoso</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
+                <div class="asset-status"><span style="width:8px;height:8px;border-radius:50%;background:#059669;display:inline-block;"></span> Aktif</div>
+                <span class="condition-badge c-excellent">🟢 Sangat Baik</span>
+                <span style="font-size:11px;color:#64748b;">Maint. berikutnya: 15 Apr 2025</span>
+              </div>
+            </div>
+            <div class="asset-actions">
+              <button class="action-btn">📋 WO</button>
+              <button class="action-btn">✏️ Edit</button>
+              <button class="action-btn">⋯</button>
+            </div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-code-badge">AST-002</div>
+            <div class="asset-main">
+              <div class="asset-name">Mesin CNC Haas VF-2</div>
+              <div class="asset-meta">
+                <span>Mesin · Manufacturing</span>
+                <span>Lokasi: Lantai 2, Produksi A</span>
+                <span>Dept: Produksi</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
+                <div class="asset-status"><span style="width:8px;height:8px;border-radius:50%;background:#d97706;display:inline-block;"></span> Maintenance</div>
+                <span class="condition-badge c-fair">🟡 Cukup</span>
+                <span style="font-size:11px;color:#d97706;">WO aktif: WO-2025-008</span>
+              </div>
+            </div>
+            <div class="asset-actions">
+              <button class="action-btn">📋 WO</button>
+              <button class="action-btn">✏️ Edit</button>
+              <button class="action-btn">⋯</button>
+            </div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-code-badge">AST-045</div>
+            <div class="asset-main">
+              <div class="asset-name">Toyota Hiace 2022 - B 1234 CD</div>
+              <div class="asset-meta">
+                <span>Kendaraan · Operasional</span>
+                <span>Lokasi: Parking Lot B</span>
+                <span>Ahmad Fauzi (Driver)</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
+                <div class="asset-status"><span style="width:8px;height:8px;border-radius:50%;background:#059669;display:inline-block;"></span> Aktif</div>
+                <span class="condition-badge c-good">🔵 Baik</span>
+                <span style="font-size:11px;color:#64748b;">KM: 45.280</span>
+              </div>
+            </div>
+            <div class="asset-actions">
+              <button class="action-btn">📋 WO</button>
+              <button class="action-btn">✏️ Edit</button>
+              <button class="action-btn">⋯</button>
+            </div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-code-badge">AST-088</div>
+            <div class="asset-main">
+              <div class="asset-name">AC Industrial Daikin 10 PK</div>
+              <div class="asset-meta">
+                <span>Fasilitas · HVAC</span>
+                <span>Lokasi: Lantai 3, Server Room</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
+                <div class="asset-status"><span style="width:8px;height:8px;border-radius:50%;background:#dc2626;display:inline-block;"></span> Rusak</div>
+                <span class="condition-badge c-damaged">🔴 Rusak</span>
+                <span style="font-size:11px;color:#dc2626;">WO Emergency!</span>
+              </div>
+            </div>
+            <div class="asset-actions">
+              <button class="action-btn">📋 WO</button>
+              <button class="action-btn">✏️ Edit</button>
+              <button class="action-btn">⋯</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="rp-header">
+          <div class="rp-asset-code">AST-001 · IT / Server</div>
+          <div class="rp-asset-name">Server Dell PowerEdge R750</div>
+          <div class="rp-img-placeholder">🖥️</div>
+          <div class="qr-mock">▪▪▪ QR-AST-001 (display only)</div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Informasi Aset</div>
+          <div class="info-grid">
+            <div class="info-item"><div class="info-label">Brand</div><div class="info-value">Dell</div></div>
+            <div class="info-item"><div class="info-label">Model</div><div class="info-value">PowerEdge R750</div></div>
+            <div class="info-item"><div class="info-label">Serial No.</div><div class="info-value">DL12345ABC</div></div>
+            <div class="info-item"><div class="info-label">Tahun Beli</div><div class="info-value">Jan 2024</div></div>
+            <div class="info-item"><div class="info-label">Nilai Beli</div><div class="info-value">Rp 150 jt</div></div>
+            <div class="info-item"><div class="info-label">Nilai Saat Ini</div><div class="info-value">Rp 120 jt</div></div>
+          </div>
+          <div style="margin-top:10px;">
+            <div class="info-label">Penyusutan (20%)</div>
+            <div class="dep-bar"><div class="dep-fill" style="width:20%;"></div></div>
+          </div>
+          <div style="font-size:12px;color:#6b7280;margin-top:4px;">Garansi: s/d 15 Jan 2027 · Est. Umur: 5 tahun</div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Work Order Aktif</div>
+          <div class="wo-card">
+            <div class="wo-num">WO-2025-001</div>
+            <div class="wo-title">Preventive Maintenance Q1 2025</div>
+            <div class="wo-meta">
+              <span>🔵 In Progress</span>
+              <span>🟡 Medium</span>
+              <span>Ahmad Fauzi</span>
+            </div>
+            <div class="wo-meta">📅 15 Jan · ⏱ Est: 4 jam · Rp 500.000</div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Riwayat Maintenance</div>
+          <div class="maint-item">
+            <div class="maint-dot"></div>
+            <div><div class="maint-date">10 Des 2024</div><div class="maint-type">Preventive Maintenance</div><div class="maint-status">✅ Selesai</div></div>
+          </div>
+          <div class="maint-item">
+            <div class="maint-dot"></div>
+            <div><div class="maint-date">05 Sep 2024</div><div class="maint-type">Corrective (PSU Replacement)</div><div class="maint-status">✅ Selesai</div></div>
+          </div>
+          <div class="maint-item">
+            <div class="maint-dot"></div>
+            <div><div class="maint-date">15 Jun 2024</div><div class="maint-type">Preventive Maintenance</div><div class="maint-status">✅ Selesai</div></div>
+          </div>
+        </div>
+        <div class="rp-actions">
+          <button class="rp-action-btn">📋 Buat WO</button>
+          <button class="rp-action-btn secondary">📍 Transfer</button>
+          <button class="rp-action-btn secondary">🗑 Dispose</button>
+          <button class="rp-action-btn secondary">✏️ Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

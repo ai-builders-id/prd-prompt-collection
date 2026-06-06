@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Management System - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#4f46e5; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .topbar-right { display:flex; gap:10px; align-items:center; }
+  .search-bar { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); border-radius:8px; padding:6px 14px; color:white; font-size:13px; width:280px; }
+  .search-bar::placeholder { color:rgba(255,255,255,.6); }
+  .app { display:flex; flex:1; overflow:hidden; }
+  /* Folder tree sidebar */
+  .folder-tree { width:240px; background:white; border-right:1px solid #e2e8f0; overflow-y:auto; padding:12px; }
+  .tree-header { display:flex; align-items:center; justify-content:space-between; padding:4px 4px 10px; }
+  .tree-header-title { font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; }
+  .tree-add-btn { background:none; border:none; color:#4f46e5; font-size:18px; cursor:pointer; }
+  .tree-item { display:flex; align-items:center; gap:6px; padding:7px 8px; border-radius:8px; cursor:pointer; font-size:13px; color:#475569; margin-bottom:1px; }
+  .tree-item:hover { background:#f1f5f9; }
+  .tree-item.active { background:#ede9fe; color:#4f46e5; font-weight:600; }
+  .tree-item-icon { font-size:16px; flex-shrink:0; }
+  .tree-item-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tree-item-count { font-size:11px; color:#94a3b8; flex-shrink:0; }
+  .tree-indent { padding-left:20px; }
+  .tree-indent-2 { padding-left:38px; }
+  .tree-divider { height:1px; background:#e2e8f0; margin:8px 0; }
+  /* Main content */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .main-toolbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:#64748b; }
+  .breadcrumb-item { cursor:pointer; }
+  .breadcrumb-item:hover { color:#4f46e5; }
+  .breadcrumb-sep { color:#cbd5e1; }
+  .breadcrumb-current { color:#1e293b; font-weight:600; }
+  .toolbar-actions { display:flex; gap:8px; align-items:center; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#4f46e5; color:white; }
+  .btn-secondary { background:white; border:1px solid #e2e8f0; color:#475569; }
+  .view-toggle { display:flex; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .view-btn { padding:6px 12px; font-size:13px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .view-btn.active { background:#4f46e5; color:white; }
+  /* Drop zone */
+  .drop-zone { margin:0 20px 0; background:white; border:2px dashed #e2e8f0; border-radius:10px; padding:14px 20px; display:flex; align-items:center; gap:12px; font-size:13px; color:#94a3b8; cursor:pointer; transition:all .2s; }
+  .drop-zone:hover { border-color:#4f46e5; color:#4f46e5; }
+  /* File list */
+  .file-list { flex:1; overflow-y:auto; padding:16px 20px; }
+  .sort-row { display:flex; gap:8px; margin-bottom:12px; align-items:center; }
+  .sort-chip { background:white; border:1px solid #e2e8f0; color:#64748b; border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer; }
+  .sort-chip.active { background:#ede9fe; color:#4f46e5; border-color:#a5b4fc; }
+  .file-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; margin-bottom:6px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:border-color .15s; }
+  .file-card:hover { border-color:#a5b4fc; }
+  .file-card.selected { border-color:#4f46e5; background:#faf5ff; }
+  .file-icon { width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .file-icon.pdf { background:#fee2e2; }
+  .file-icon.docx { background:#dbeafe; }
+  .file-icon.xlsx { background:#d1fae5; }
+  .file-icon.pptx { background:#fff7ed; }
+  .file-icon.folder { background:#fef3c7; }
+  .file-icon.image { background:#f3e8ff; }
+  .file-name { font-size:13px; font-weight:600; flex:1; }
+  .file-meta { font-size:11px; color:#94a3b8; margin-top:3px; }
+  .file-tags { display:flex; gap:4px; margin-top:4px; }
+  .file-tag { background:#f1f5f9; color:#475569; font-size:10px; padding:1px 6px; border-radius:4px; }
+  .file-info { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  .file-size { font-size:12px; color:#64748b; }
+  .file-date { font-size:11px; color:#94a3b8; }
+  .star-btn { background:none; border:none; font-size:16px; cursor:pointer; color:#fbbf24; padding:2px; }
+  .file-actions { display:flex; gap:4px; opacity:0; }
+  .file-card:hover .file-actions { opacity:1; }
+  .action-btn { background:#f1f5f9; border:none; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer; }
+  /* Right panel: Preview */
+  .right-panel { width:280px; background:white; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; }
+  .rp-preview { background:#f8fafc; min-height:160px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #e2e8f0; font-size:48px; }
+  .rp-section { padding:14px 16px; border-bottom:1px solid #f1f5f9; }
+  .rp-title { font-size:14px; font-weight:700; margin-bottom:6px; }
+  .rp-section-label { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .meta-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+  .meta-label { color:#94a3b8; }
+  .meta-value { color:#1e293b; font-weight:500; }
+  .version-item { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; }
+  .ver-num { font-size:12px; font-weight:700; color:#4f46e5; }
+  .ver-meta { font-size:11px; color:#94a3b8; }
+  .ver-badge { background:#ede9fe; color:#4f46e5; font-size:10px; padding:1px 6px; border-radius:999px; }
+  .tag-editor { display:flex; flex-wrap:wrap; gap:4px; }
+  .editable-tag { background:#ede9fe; color:#4f46e5; font-size:11px; padding:2px 8px; border-radius:4px; display:flex; align-items:center; gap:3px; }
+  .editable-tag span { cursor:pointer; color:#a5b4fc; }
+  .rp-actions { padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
+  .action-row { display:flex; gap:6px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>📁 Document Management System</h1>
+  <div class="topbar-right">
+    <input class="search-bar" type="search" placeholder="🔍 Cari dokumen, folder, tag...">
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="folder-tree">
+    <div class="tree-header">
+      <span class="tree-header-title">Folder</span>
+      <button class="tree-add-btn" title="Folder baru">＋</button>
+    </div>
+    <div class="tree-item active"><span class="tree-item-icon">📁</span><span class="tree-item-name">My Documents</span><span class="tree-item-count">24</span></div>
+    <div class="tree-indent">
+      <div class="tree-item"><span class="tree-item-icon">📂</span><span class="tree-item-name">Projects</span><span class="tree-item-count">12</span></div>
+      <div class="tree-indent">
+        <div class="tree-item"><span class="tree-item-icon">📂</span><span class="tree-item-name">Web App</span><span class="tree-item-count">5</span></div>
+        <div class="tree-item"><span class="tree-item-icon">📂</span><span class="tree-item-name">Mobile App</span><span class="tree-item-count">3</span></div>
+      </div>
+      <div class="tree-item"><span class="tree-item-icon">📂</span><span class="tree-item-name">Finance</span><span class="tree-item-count">8</span></div>
+      <div class="tree-item"><span class="tree-item-icon">📂</span><span class="tree-item-name">HR Documents</span><span class="tree-item-count">4</span></div>
+    </div>
+    <div class="tree-divider"></div>
+    <div class="tree-item"><span class="tree-item-icon">🤝</span><span class="tree-item-name">Shared with Me</span><span class="tree-item-count">23</span></div>
+    <div class="tree-item"><span class="tree-item-icon">🕐</span><span class="tree-item-name">Recent</span><span class="tree-item-count">15</span></div>
+    <div class="tree-item"><span class="tree-item-icon">⭐</span><span class="tree-item-name">Starred</span><span class="tree-item-count">6</span></div>
+    <div class="tree-divider"></div>
+    <div class="tree-item"><span class="tree-item-icon">🗑</span><span class="tree-item-name">Trash</span><span class="tree-item-count">3</span></div>
+  </div>
+  <div class="main">
+    <div class="main-toolbar">
+      <div>
+        <div class="breadcrumb">
+          <span class="breadcrumb-item">My Documents</span>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">Finance</span>
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">8 dokumen · Diperbarui 12 Jan 2025</div>
+      </div>
+      <div class="toolbar-actions">
+        <div class="view-toggle">
+          <button class="view-btn active">☰</button>
+          <button class="view-btn">⊞</button>
+        </div>
+        <button class="btn btn-secondary">Sort ▼</button>
+        <button class="btn btn-primary">⬆ Upload</button>
+      </div>
+    </div>
+    <div class="drop-zone">
+      <span style="font-size:24px;">📂</span>
+      <span>Drag & drop file di sini untuk upload, atau <span style="color:#4f46e5;font-weight:600;">klik untuk browse</span></span>
+    </div>
+    <div class="file-list">
+      <div class="sort-row">
+        <div class="sort-chip active">Semua</div>
+        <div class="sort-chip">PDF</div>
+        <div class="sort-chip">Excel</div>
+        <div class="sort-chip">Word</div>
+        <div class="sort-chip">⭐ Berbintang</div>
+      </div>
+      <div class="file-card selected">
+        <div class="file-icon pdf">📄</div>
+        <div style="flex:1;">
+          <div class="file-name">Laporan Keuangan Q4 2024.pdf</div>
+          <div class="file-meta">Finance · v3 · Diupload oleh Admin</div>
+          <div class="file-tags"><span class="file-tag">laporan</span><span class="file-tag">keuangan</span><span class="file-tag">q4</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="file-actions">
+            <button class="action-btn">⬇</button>
+            <button class="action-btn">🔗</button>
+            <button class="action-btn">⋯</button>
+          </div>
+          <div class="file-info">
+            <div class="file-size">2.4 MB</div>
+            <div class="file-date">12 Jan 2025</div>
+          </div>
+          <button class="star-btn">⭐</button>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon xlsx">📊</div>
+        <div style="flex:1;">
+          <div class="file-name">Anggaran 2025.xlsx</div>
+          <div class="file-meta">Finance · v1 · Diupload oleh Budi</div>
+          <div class="file-tags"><span class="file-tag">anggaran</span><span class="file-tag">2025</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="file-actions">
+            <button class="action-btn">⬇</button>
+            <button class="action-btn">🔗</button>
+            <button class="action-btn">⋯</button>
+          </div>
+          <div class="file-info">
+            <div class="file-size">1.1 MB</div>
+            <div class="file-date">10 Jan 2025</div>
+          </div>
+          <button class="star-btn" style="color:#e2e8f0;">☆</button>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon docx">📝</div>
+        <div style="flex:1;">
+          <div class="file-name">Kontrak Vendor PT Sumber Makmur.docx</div>
+          <div class="file-meta">Finance · v2 · Diupload oleh Admin</div>
+          <div class="file-tags"><span class="file-tag">kontrak</span><span class="file-tag">vendor</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="file-actions">
+            <button class="action-btn">⬇</button>
+            <button class="action-btn">🔗</button>
+            <button class="action-btn">⋯</button>
+          </div>
+          <div class="file-info">
+            <div class="file-size">350 KB</div>
+            <div class="file-date">08 Jan 2025</div>
+          </div>
+          <button class="star-btn" style="color:#e2e8f0;">☆</button>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon pdf">📄</div>
+        <div style="flex:1;">
+          <div class="file-name">Neraca Keuangan Des 2024.pdf</div>
+          <div class="file-meta">Finance · v1 · Diupload oleh CFO</div>
+          <div class="file-tags"><span class="file-tag">neraca</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="file-actions">
+            <button class="action-btn">⬇</button>
+            <button class="action-btn">🔗</button>
+            <button class="action-btn">⋯</button>
+          </div>
+          <div class="file-info">
+            <div class="file-size">890 KB</div>
+            <div class="file-date">05 Jan 2025</div>
+          </div>
+          <button class="star-btn" style="color:#e2e8f0;">☆</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="rp-preview">📄</div>
+    <div class="rp-section">
+      <div class="rp-title">Laporan Keuangan Q4 2024.pdf</div>
+      <div style="font-size:12px;color:#64748b;">Laporan keuangan kuartal keempat tahun 2024</div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-section-label">Metadata</div>
+      <div class="meta-row"><span class="meta-label">Tipe</span><span class="meta-value">PDF</span></div>
+      <div class="meta-row"><span class="meta-label">Ukuran</span><span class="meta-value">2.4 MB</span></div>
+      <div class="meta-row"><span class="meta-label">Versi</span><span class="meta-value">v3 (terkini)</span></div>
+      <div class="meta-row"><span class="meta-label">Dibuat</span><span class="meta-value">10 Jan 2025</span></div>
+      <div class="meta-row"><span class="meta-label">Diubah</span><span class="meta-value">12 Jan 2025</span></div>
+      <div class="meta-row"><span class="meta-label">Diupload</span><span class="meta-value">Admin</span></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-section-label">Riwayat Versi</div>
+      <div class="version-item">
+        <div><div class="ver-num">v3</div><div class="ver-meta">12 Jan 2025 · Admin</div></div>
+        <span class="ver-badge">Terkini</span>
+      </div>
+      <div class="version-item">
+        <div><div class="ver-num">v2</div><div class="ver-meta">05 Jan 2025 · Budi</div></div>
+        <button style="background:none;border:none;color:#4f46e5;font-size:12px;cursor:pointer;">Restore</button>
+      </div>
+      <div class="version-item">
+        <div><div class="ver-num">v1</div><div class="ver-meta">01 Jan 2025 · Admin</div></div>
+        <button style="background:none;border:none;color:#4f46e5;font-size:12px;cursor:pointer;">Restore</button>
+      </div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-section-label">Tags</div>
+      <div class="tag-editor">
+        <div class="editable-tag">laporan <span>×</span></div>
+        <div class="editable-tag">keuangan <span>×</span></div>
+        <div class="editable-tag">q4 <span>×</span></div>
+        <button style="background:none;border:1px dashed #e2e8f0;border-radius:4px;padding:2px 8px;font-size:11px;color:#94a3b8;cursor:pointer;">＋ Tag</button>
+      </div>
+    </div>
+    <div class="rp-actions">
+      <div class="action-row">
+        <button class="btn btn-primary" style="flex:1;">⬇ Unduh</button>
+        <button class="btn btn-secondary" style="flex:1;">🔗 Bagikan</button>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-secondary" style="flex:1;">✏️ Ubah Nama</button>
+        <button class="btn btn-secondary" style="flex:1;">📁 Pindah</button>
+      </div>
+      <button class="btn" style="width:100%;background:#fee2e2;color:#dc2626;border:none;">🗑 Hapus</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

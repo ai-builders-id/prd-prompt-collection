@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Estate Management - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Georgia',serif; background:#f5f5f0; color:#1a1a2e; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .navbar { background:#1e3a8a; color:white; padding:12px 28px; display:flex; align-items:center; justify-content:space-between; }
+  .navbar-brand { font-size:18px; font-weight:700; font-family:Georgia,serif; display:flex; align-items:center; gap:8px; }
+  .navbar-brand span { font-size:14px; color:#d4af37; font-style:italic; }
+  .navbar-links { display:flex; gap:0; }
+  .nav-link { padding:8px 16px; font-size:13px; color:rgba(255,255,255,.7); cursor:pointer; border-bottom:2px solid transparent; font-family:-apple-system,sans-serif; }
+  .nav-link:hover { color:white; }
+  .nav-link.active { color:#d4af37; border-bottom-color:#d4af37; }
+  .navbar-right { display:flex; gap:10px; align-items:center; font-family:-apple-system,sans-serif; }
+  .nav-btn { background:#d4af37; border:none; color:#1e3a8a; border-radius:6px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  /* Dashboard main */
+  .main-content { flex:1; overflow-y:auto; padding:24px 28px; }
+  .page-title { font-size:24px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; margin-bottom:4px; }
+  .page-sub { font-size:13px; color:#64748b; margin-bottom:24px; font-family:-apple-system,sans-serif; }
+  .metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+  .metric-card { background:white; border:1px solid #e8e4dc; border-radius:12px; padding:20px; border-top:3px solid #1e3a8a; }
+  .metric-label { font-size:12px; color:#64748b; font-family:-apple-system,sans-serif; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .metric-value { font-size:28px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; }
+  .metric-sub { font-size:12px; color:#94a3b8; margin-top:4px; font-family:-apple-system,sans-serif; }
+  .metric-trend { font-size:12px; margin-top:6px; font-family:-apple-system,sans-serif; }
+  .trend-up { color:#059669; font-weight:600; }
+  .trend-down { color:#dc2626; font-weight:600; }
+  /* Map mock */
+  .map-section { background:white; border:1px solid #e8e4dc; border-radius:12px; overflow:hidden; margin-bottom:24px; }
+  .map-header { padding:14px 20px; border-bottom:1px solid #e8e4dc; display:flex; align-items:center; justify-content:space-between; }
+  .map-title { font-size:15px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; }
+  .map-toggle { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .mt-btn { padding:5px 14px; font-size:12px; border:none; background:none; color:#64748b; cursor:pointer; font-family:-apple-system,sans-serif; }
+  .mt-btn.active { background:#1e3a8a; color:white; }
+  .map-body { background:#e8f0e8; height:280px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .map-placeholder { text-align:center; color:#64748b; }
+  .map-pin { position:absolute; display:flex; flex-direction:column; align-items:center; cursor:pointer; }
+  .map-pin-icon { font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
+  .map-pin-label { background:#1e3a8a; color:#d4af37; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; white-space:nowrap; font-family:-apple-system,sans-serif; }
+  /* Properties grid */
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .section-title { font-size:18px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; }
+  .view-toggle { display:flex; gap:4px; }
+  .vt-btn { background:white; border:1px solid #e8e4dc; border-radius:6px; padding:5px 12px; font-size:12px; cursor:pointer; font-family:-apple-system,sans-serif; }
+  .vt-btn.active { background:#1e3a8a; color:white; border-color:#1e3a8a; }
+  .properties-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+  .prop-card { background:white; border:1px solid #e8e4dc; border-radius:12px; overflow:hidden; cursor:pointer; transition:box-shadow .2s; }
+  .prop-card:hover { box-shadow:0 8px 24px rgba(30,58,138,.12); }
+  .prop-image { height:140px; display:flex; align-items:center; justify-content:center; font-size:48px; position:relative; }
+  .prop-type-badge { position:absolute; top:10px; left:10px; background:#1e3a8a; color:#d4af37; font-size:10px; font-weight:700; padding:3px 8px; border-radius:999px; font-family:-apple-system,sans-serif; }
+  .occupancy-badge { position:absolute; top:10px; right:10px; font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; font-family:-apple-system,sans-serif; }
+  .oc-high { background:#d1fae5; color:#059669; }
+  .oc-mid { background:#fef3c7; color:#d97706; }
+  .oc-low { background:#fee2e2; color:#dc2626; }
+  .prop-body { padding:16px; }
+  .prop-name { font-size:15px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; margin-bottom:4px; }
+  .prop-address { font-size:12px; color:#64748b; margin-bottom:12px; font-family:-apple-system,sans-serif; }
+  .prop-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+  .ps-item { text-align:center; }
+  .ps-value { font-size:16px; font-weight:700; font-family:Georgia,serif; }
+  .ps-label { font-size:10px; color:#94a3b8; font-family:-apple-system,sans-serif; }
+  .prop-occupancy-bar { height:4px; background:#f1f5f9; border-radius:999px; overflow:hidden; margin-bottom:4px; }
+  .poc-fill { height:100%; border-radius:999px; }
+  .prop-occ-text { font-size:11px; color:#64748b; font-family:-apple-system,sans-serif; }
+  /* Maintenance table */
+  .maint-table { width:100%; border-collapse:collapse; font-family:-apple-system,sans-serif; }
+  .maint-table th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; background:#f8f8f5; border-bottom:1px solid #e8e4dc; }
+  .maint-table td { padding:12px 14px; border-bottom:1px solid #f5f5f0; font-size:13px; }
+  .priority-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+  .pt-high { background:#fee2e2; color:#dc2626; }
+  .pt-medium { background:#fef3c7; color:#d97706; }
+  .pt-low { background:#d1fae5; color:#059669; }
+  /* Right panel: tenant detail */
+  .right-panel { width:320px; background:white; border-left:1px solid #e8e4dc; overflow-y:auto; padding:20px; font-family:-apple-system,sans-serif; }
+  .rp-title { font-size:16px; font-weight:700; font-family:Georgia,serif; color:#1e3a8a; margin-bottom:4px; }
+  .rp-address { font-size:12px; color:#64748b; margin-bottom:20px; }
+  .unit-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:16px; }
+  .unit-cell { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; cursor:pointer; }
+  .unit-occupied { background:#1e3a8a; color:white; }
+  .unit-vacant { background:#d1fae5; color:#059669; border:1px solid #86efac; }
+  .unit-maintenance { background:#fef3c7; color:#d97706; }
+  .legend-row { display:flex; gap:10px; font-size:11px; margin-bottom:20px; }
+  .legend-item { display:flex; align-items:center; gap:4px; }
+  .legend-dot { width:10px; height:10px; border-radius:2px; }
+  .tenant-item { padding:12px 0; border-bottom:1px solid #f5f5f0; }
+  .tenant-name { font-size:14px; font-weight:700; color:#1e3a8a; }
+  .tenant-meta { font-size:12px; color:#64748b; margin-top:2px; }
+  .tenant-rent { font-size:14px; font-weight:700; color:#d4af37; margin-top:4px; }
+  .expiry-tag { font-size:11px; padding:2px 6px; border-radius:4px; font-weight:600; }
+  .et-expiring { background:#fee2e2; color:#dc2626; }
+  .et-ok { background:#d1fae5; color:#059669; }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <div class="navbar-brand">🏛️ EstateVault <span>Portfolio Manager</span></div>
+  <div class="navbar-links">
+    <div class="nav-link active">Dashboard</div>
+    <div class="nav-link">Properties</div>
+    <div class="nav-link">Tenants</div>
+    <div class="nav-link">Finances</div>
+    <div class="nav-link">Maintenance</div>
+    <div class="nav-link">Documents</div>
+  </div>
+  <div class="navbar-right">
+    <span style="font-size:12px;opacity:.7;">3 Properties · Q1 2025</span>
+    <button class="nav-btn">＋ Add Property</button>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(212,175,55,.2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#d4af37;">JD</div>
+  </div>
+</div>
+<div class="app">
+  <div class="main-content">
+    <div class="page-title">Portfolio Overview</div>
+    <div class="page-sub">3 active properties · Last updated: Jan 15, 2025</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Occupancy Rate</div>
+        <div class="metric-value">87%</div>
+        <div style="height:8px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin:8px 0;">
+          <div style="height:100%;width:87%;background:#d4af37;border-radius:999px;"></div>
+        </div>
+        <div class="metric-sub">52 of 60 units occupied</div>
+        <div class="metric-trend trend-up">▲ +3% vs last quarter</div>
+      </div>
+      <div class="metric-card" style="border-top-color:#d4af37;">
+        <div class="metric-label">Monthly Revenue</div>
+        <div class="metric-value">$42,800</div>
+        <div class="metric-sub">Gross rental income</div>
+        <div class="metric-trend trend-up">▲ +5.2% vs Jan 2024</div>
+      </div>
+      <div class="metric-card" style="border-top-color:#dc2626;">
+        <div class="metric-label">Pending Maintenance</div>
+        <div class="metric-value">7</div>
+        <div class="metric-sub">3 High · 3 Medium · 1 Low</div>
+        <div class="metric-trend trend-down">▲ +2 from last month</div>
+      </div>
+    </div>
+    <!-- Map -->
+    <div class="map-section">
+      <div class="map-header">
+        <span class="map-title">Property Locations</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="display:flex;gap:6px;font-size:12px;">
+            <label><input type="checkbox" checked> Residential</label>
+            <label><input type="checkbox" checked> Commercial</label>
+            <label><input type="checkbox" checked> Industrial</label>
+          </div>
+          <div class="map-toggle">
+            <button class="mt-btn active">Map</button>
+            <button class="mt-btn">Grid</button>
+          </div>
+        </div>
+      </div>
+      <div class="map-body">
+        <div class="map-placeholder">
+          <div style="font-size:48px;margin-bottom:8px;">🗺️</div>
+          <div style="font-size:14px;color:#94a3b8;">Interactive Map View</div>
+          <div style="font-size:12px;color:#94a3b8;">Click a pin to see property details</div>
+        </div>
+        <div class="map-pin" style="top:60px;left:140px;">
+          <div class="map-pin-icon">🏢</div>
+          <div class="map-pin-label">Silicon Valley Hub</div>
+        </div>
+        <div class="map-pin" style="top:100px;right:100px;">
+          <div class="map-pin-icon">🏠</div>
+          <div class="map-pin-label">Grand Heights</div>
+        </div>
+        <div class="map-pin" style="bottom:70px;left:200px;">
+          <div class="map-pin-icon">🌲</div>
+          <div class="map-pin-label">Greenwood Apts</div>
+        </div>
+      </div>
+    </div>
+    <!-- Properties -->
+    <div class="section-header">
+      <div class="section-title">Properties</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select style="border:1px solid #e8e4dc;border-radius:8px;padding:6px 10px;font-size:12px;background:white;font-family:-apple-system,sans-serif;"><option>All Types</option><option>Residential</option><option>Commercial</option></select>
+        <div class="view-toggle">
+          <button class="vt-btn active">Grid</button>
+          <button class="vt-btn">List</button>
+        </div>
+      </div>
+    </div>
+    <div class="properties-grid">
+      <div class="prop-card">
+        <div class="prop-image" style="background:#e8f0e8;">🏢<div class="prop-type-badge">Commercial</div><div class="occupancy-badge oc-high">95% Occupied</div></div>
+        <div class="prop-body">
+          <div class="prop-name">Silicon Valley Hub</div>
+          <div class="prop-address">📍 1200 Innovation Blvd, Palo Alto, CA</div>
+          <div class="prop-stats">
+            <div class="ps-item"><div class="ps-value">20</div><div class="ps-label">Units</div></div>
+            <div class="ps-item"><div class="ps-value">19</div><div class="ps-label">Occupied</div></div>
+            <div class="ps-item"><div class="ps-value">$18.5k</div><div class="ps-label">Rev./Mo.</div></div>
+          </div>
+          <div class="prop-occupancy-bar"><div class="poc-fill" style="width:95%;background:#059669;"></div></div>
+          <div class="prop-occ-text">95% · 1 unit available</div>
+        </div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-image" style="background:#f0e8e8;">🏛️<div class="prop-type-badge">Residential</div><div class="occupancy-badge oc-high">88% Occupied</div></div>
+        <div class="prop-body">
+          <div class="prop-name">The Grand Heights</div>
+          <div class="prop-address">📍 500 Grand Ave, Manhattan, NY</div>
+          <div class="prop-stats">
+            <div class="ps-item"><div class="ps-value">25</div><div class="ps-label">Units</div></div>
+            <div class="ps-item"><div class="ps-value">22</div><div class="ps-label">Occupied</div></div>
+            <div class="ps-item"><div class="ps-value">$16.2k</div><div class="ps-label">Rev./Mo.</div></div>
+          </div>
+          <div class="prop-occupancy-bar"><div class="poc-fill" style="width:88%;background:#d4af37;"></div></div>
+          <div class="prop-occ-text">88% · 3 units available</div>
+        </div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-image" style="background:#e8ede8;">🌲<div class="prop-type-badge">Residential</div><div class="occupancy-badge oc-mid">73% Occupied</div></div>
+        <div class="prop-body">
+          <div class="prop-name">Greenwood Apartments</div>
+          <div class="prop-address">📍 200 Pine St, Austin, TX</div>
+          <div class="prop-stats">
+            <div class="ps-item"><div class="ps-value">15</div><div class="ps-label">Units</div></div>
+            <div class="ps-item"><div class="ps-value">11</div><div class="ps-label">Occupied</div></div>
+            <div class="ps-item"><div class="ps-value">$8.1k</div><div class="ps-label">Rev./Mo.</div></div>
+          </div>
+          <div class="prop-occupancy-bar"><div class="poc-fill" style="width:73%;background:#d97706;"></div></div>
+          <div class="prop-occ-text">73% · 4 units available</div>
+        </div>
+      </div>
+    </div>
+    <!-- Maintenance -->
+    <div class="section-header">
+      <div class="section-title">Pending Maintenance</div>
+      <button style="background:#1e3a8a;color:white;border:none;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:-apple-system,sans-serif;">＋ New Request</button>
+    </div>
+    <div style="background:white;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <table class="maint-table">
+        <thead><tr><th>Property</th><th>Unit</th><th>Issue</th><th>Priority</th><th>Reported</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Grand Heights</td><td>#12B</td><td>HVAC not cooling properly</td><td><span class="priority-tag pt-high">High</span></td><td>Jan 14</td><td><span style="color:#d97706;font-weight:600;font-size:12px;">In Progress</span></td></tr>
+          <tr><td>Greenwood</td><td>#03A</td><td>Plumbing leak in bathroom</td><td><span class="priority-tag pt-high">High</span></td><td>Jan 13</td><td><span style="color:#dc2626;font-weight:600;font-size:12px;">Pending</span></td></tr>
+          <tr><td>SV Hub</td><td>Suite 5</td><td>Elevator inspection due</td><td><span class="priority-tag pt-medium">Medium</span></td><td>Jan 10</td><td><span style="color:#d97706;font-weight:600;font-size:12px;">Scheduled</span></td></tr>
+          <tr><td>Grand Heights</td><td>#07C</td><td>Door lock malfunction</td><td><span class="priority-tag pt-medium">Medium</span></td><td>Jan 9</td><td><span style="color:#059669;font-weight:600;font-size:12px;">Completed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="rp-title">The Grand Heights</div>
+    <div class="rp-address">📍 500 Grand Ave, Manhattan, NY · Residential</div>
+    <div style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Unit Availability</div>
+    <div class="unit-grid">
+      <div class="unit-cell unit-occupied">1A</div>
+      <div class="unit-cell unit-occupied">2A</div>
+      <div class="unit-cell unit-occupied">3A</div>
+      <div class="unit-cell unit-vacant">4A</div>
+      <div class="unit-cell unit-occupied">1B</div>
+      <div class="unit-cell unit-occupied">2B</div>
+      <div class="unit-cell unit-maintenance">3B</div>
+      <div class="unit-cell unit-occupied">4B</div>
+      <div class="unit-cell unit-occupied">1C</div>
+      <div class="unit-cell unit-vacant">2C</div>
+      <div class="unit-cell unit-occupied">3C</div>
+      <div class="unit-cell unit-occupied">4C</div>
+      <div class="unit-cell unit-vacant">1D</div>
+      <div class="unit-cell unit-occupied">2D</div>
+      <div class="unit-cell unit-occupied">3D</div>
+      <div class="unit-cell unit-occupied">4D</div>
+    </div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:#1e3a8a;"></div> Occupied</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d1fae5;border:1px solid #86efac;"></div> Vacant</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fef3c7;"></div> Maint.</div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Active Tenants</div>
+    <div class="tenant-item">
+      <div class="tenant-name">James Peterson</div>
+      <div class="tenant-meta">Unit 1A · 2BR</div>
+      <div class="tenant-rent">$2,800/mo</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+        <span class="tenant-meta">Lease expires: Mar 31, 2025</span>
+        <span class="expiry-tag et-expiring">Expiring Soon</span>
+      </div>
+    </div>
+    <div class="tenant-item">
+      <div class="tenant-name">Sarah Chen</div>
+      <div class="tenant-meta">Unit 2A · 1BR</div>
+      <div class="tenant-rent">$1,950/mo</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+        <span class="tenant-meta">Lease expires: Dec 31, 2025</span>
+        <span class="expiry-tag et-ok">Active</span>
+      </div>
+    </div>
+    <div class="tenant-item">
+      <div class="tenant-name">Robert Williams</div>
+      <div class="tenant-meta">Unit 3A · Studio</div>
+      <div class="tenant-rent">$1,400/mo</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+        <span class="tenant-meta">Lease expires: Jun 30, 2025</span>
+        <span class="expiry-tag et-ok">Active</span>
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;">
+      <button style="background:#1e3a8a;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">📋 Tenant Portal</button>
+      <button style="background:#f5f5f0;border:1px solid #e8e4dc;color:#1e3a8a;border-radius:8px;padding:9px;font-size:13px;cursor:pointer;">💰 Financial History</button>
+      <button style="background:#f5f5f0;border:1px solid #e8e4dc;color:#1e3a8a;border-radius:8px;padding:9px;font-size:13px;cursor:pointer;">🔧 Maintenance Log</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

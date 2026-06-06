@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vehicle Fleet Management - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#1c1f26; color:#e2e8f0; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#0f1117; border-bottom:1px solid #2d3142; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; color:white; display:flex; align-items:center; gap:8px; }
+  .topbar-right { display:flex; gap:10px; align-items:center; }
+  .alert-btn { background:#dc2626; border:none; color:white; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; position:relative; }
+  .alert-count { position:absolute; top:-4px; right:-4px; background:#fbbf24; color:#1c1917; border-radius:50%; width:16px; height:16px; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:240px; background:#0f1117; border-right:1px solid #2d3142; display:flex; flex-direction:column; }
+  .sidebar-header { padding:14px 16px; border-bottom:1px solid #2d3142; }
+  .sidebar-header h3 { font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+  .vehicle-status-summary { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .vss-card { background:#1c1f26; border-radius:8px; padding:8px 10px; border-left:3px solid; }
+  .vss-val { font-size:18px; font-weight:800; }
+  .vss-label { font-size:10px; color:#64748b; margin-top:1px; }
+  .vehicle-list { flex:1; overflow-y:auto; padding:8px; }
+  .vehicle-list-title { font-size:10px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.08em; padding:8px 8px 6px; }
+  .vehicle-item { display:flex; align-items:center; gap:8px; padding:10px 10px; border-radius:8px; cursor:pointer; margin-bottom:2px; border:1px solid transparent; }
+  .vehicle-item:hover { background:#1c1f26; border-color:#2d3142; }
+  .vehicle-item.active { background:#1c2a3a; border-color:#f97316; }
+  .vi-icon { font-size:18px; }
+  .vi-plate { font-size:13px; font-weight:700; color:white; font-family:monospace; }
+  .vi-model { font-size:11px; color:#64748b; }
+  .vi-status-dot { width:8px; height:8px; border-radius:50%; margin-left:auto; flex-shrink:0; }
+  .vs-moving { background:#22c55e; box-shadow:0 0 6px #22c55e; }
+  .vs-parked { background:#ef4444; }
+  .vs-maintenance { background:#f59e0b; }
+  .vi-fuel { font-size:10px; color:#64748b; }
+  /* Main content */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .main-tabs { background:#0f1117; border-bottom:1px solid #2d3142; padding:0 20px; display:flex; gap:0; }
+  .main-tab { padding:12px 16px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:none; color:#64748b; border-bottom:2px solid transparent; }
+  .main-tab:hover { color:#e2e8f0; }
+  .main-tab.active { color:#f97316; border-bottom-color:#f97316; }
+  .map-area { flex:1; position:relative; overflow:hidden; }
+  .map-bg { width:100%; height:100%; background:linear-gradient(135deg,#1a2035 0%,#152035 50%,#1a2535 100%); position:relative; }
+  /* Map grid lines */
+  .map-grid { position:absolute; top:0; left:0; right:0; bottom:0; background-image:linear-gradient(rgba(45,49,66,.4) 1px, transparent 1px),linear-gradient(90deg, rgba(45,49,66,.4) 1px, transparent 1px); background-size:60px 60px; }
+  /* Roads */
+  .road-h { position:absolute; height:12px; background:#253040; border-top:1px solid #2d3142; border-bottom:1px solid #2d3142; }
+  .road-v { position:absolute; width:12px; background:#253040; border-left:1px solid #2d3142; border-right:1px solid #2d3142; }
+  /* Vehicle markers */
+  .vehicle-marker { position:absolute; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .vm-icon { font-size:22px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); transition:transform .2s; }
+  .vehicle-marker:hover .vm-icon { transform:scale(1.2); }
+  .vm-label { background:#0f1117; border:1px solid #2d3142; border-radius:6px; padding:2px 6px; font-size:10px; font-weight:700; font-family:monospace; white-space:nowrap; }
+  .vm-label.moving { border-color:#22c55e; color:#22c55e; }
+  .vm-label.parked { border-color:#ef4444; color:#ef4444; }
+  .vm-label.maintenance { border-color:#f59e0b; color:#f59e0b; }
+  /* Status filter overlay */
+  .map-filter-overlay { position:absolute; top:12px; left:12px; display:flex; gap:6px; }
+  .mf-chip { background:rgba(15,17,23,.8); border:1px solid #2d3142; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; }
+  .mf-chip.moving { color:#22c55e; border-color:#22c55e; }
+  .mf-chip.parked { color:#ef4444; border-color:#ef4444; }
+  .mf-chip.maintenance { color:#f59e0b; border-color:#f59e0b; }
+  /* History slider */
+  .playback-bar { position:absolute; bottom:0; left:0; right:0; background:rgba(15,17,23,.9); border-top:1px solid #2d3142; padding:12px 20px; display:flex; align-items:center; gap:12px; }
+  .pb-btn { background:#1c1f26; border:1px solid #2d3142; color:#e2e8f0; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:13px; }
+  .pb-slider { flex:1; height:4px; background:#2d3142; border-radius:999px; cursor:pointer; }
+  .pb-time { font-size:12px; color:#64748b; font-family:monospace; }
+  /* Right panel: vehicle detail */
+  .right-panel { width:320px; background:#0f1117; border-left:1px solid #2d3142; display:flex; flex-direction:column; overflow-y:auto; }
+  .rp-vehicle-header { padding:16px; border-bottom:1px solid #2d3142; }
+  .rp-plate { font-size:20px; font-weight:800; color:white; font-family:monospace; margin-bottom:4px; }
+  .rp-model { font-size:14px; color:#94a3b8; }
+  .rp-status-row { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .status-pill { padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:4px; }
+  .sp-moving { background:rgba(34,197,94,.15); color:#22c55e; border:1px solid #22c55e; }
+  .sp-parked { background:rgba(239,68,68,.15); color:#ef4444; border:1px solid #ef4444; }
+  .sp-maintenance { background:rgba(245,158,11,.15); color:#f59e0b; border:1px solid #f59e0b; }
+  .sp-emergency { background:rgba(220,38,38,.3); color:#fca5a5; border:1px solid #dc2626; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.6} }
+  .rp-section { padding:12px 16px; border-bottom:1px solid #1c1f26; }
+  .rp-section-title { font-size:10px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+  .gauge-row { display:flex; gap:12px; margin-bottom:12px; }
+  .gauge { flex:1; }
+  .gauge-label { font-size:11px; color:#64748b; margin-bottom:4px; }
+  .gauge-val { font-size:18px; font-weight:700; margin-bottom:4px; }
+  .gauge-bar-bg { height:8px; background:#1c1f26; border-radius:999px; overflow:hidden; }
+  .gauge-bar-fill { height:100%; border-radius:999px; transition:width .3s; }
+  .info-row { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #1c1f26; }
+  .info-label { color:#64748b; }
+  .info-value { color:#e2e8f0; font-weight:500; }
+  /* Maintenance timeline */
+  .maint-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #1c1f26; }
+  .maint-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .maint-done { background:#22c55e; }
+  .maint-upcoming { background:#f59e0b; }
+  .maint-date { font-size:11px; color:#64748b; }
+  .maint-title { font-size:12px; font-weight:600; color:#e2e8f0; }
+  /* Alerts feed */
+  .alert-item { display:flex; gap:10px; padding:10px 16px; border-bottom:1px solid #1c1f26; }
+  .alert-icon { font-size:16px; flex-shrink:0; }
+  .alert-content { flex:1; }
+  .alert-title { font-size:12px; font-weight:700; }
+  .alert-meta { font-size:11px; color:#64748b; margin-top:2px; }
+  .alert-time { font-size:10px; color:#475569; }
+  .alert-sev-high { border-left:3px solid #ef4444; }
+  .alert-sev-med { border-left:3px solid #f59e0b; }
+  .alert-sev-low { border-left:3px solid #64748b; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🚚 Fleet Tracker & Manager</h1>
+  <div class="topbar-right">
+    <span style="font-size:12px;color:#64748b;">10 Vehicles · Live Tracking</span>
+    <button class="alert-btn">🔔 Alerts<div class="alert-count">4</div></button>
+    <div style="width:30px;height:30px;border-radius:50%;background:#1c1f26;border:1px solid #2d3142;display:flex;align-items:center;justify-content:center;font-size:12px;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <!-- Vehicle list sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Fleet Status</h3>
+      <div class="vehicle-status-summary">
+        <div class="vss-card" style="border-left-color:#22c55e;"><div class="vss-val" style="color:#22c55e;">6</div><div class="vss-label">In Motion</div></div>
+        <div class="vss-card" style="border-left-color:#ef4444;"><div class="vss-val" style="color:#ef4444;">3</div><div class="vss-label">Parked</div></div>
+        <div class="vss-card" style="border-left-color:#f59e0b;"><div class="vss-val" style="color:#f59e0b;">1</div><div class="vss-label">Maintenance</div></div>
+        <div class="vss-card" style="border-left-color:#dc2626;"><div class="vss-val" style="color:#dc2626;">0</div><div class="vss-label">Emergency</div></div>
+      </div>
+    </div>
+    <div class="vehicle-list">
+      <div class="vehicle-list-title">All Vehicles (10)</div>
+      <div class="vehicle-item active">
+        <span class="vi-icon">🚛</span>
+        <div>
+          <div class="vi-plate">B 1234 CD</div>
+          <div class="vi-model">Toyota Hiace · DRV-01</div>
+          <div class="vi-fuel">⛽ 78% · 📍 Moving</div>
+        </div>
+        <div class="vi-status-dot vs-moving"></div>
+      </div>
+      <div class="vehicle-item">
+        <span class="vi-icon">🚐</span>
+        <div>
+          <div class="vi-plate">D 5678 EF</div>
+          <div class="vi-model">Isuzu Elf · DRV-02</div>
+          <div class="vi-fuel">⛽ 45% · 📍 Moving</div>
+        </div>
+        <div class="vi-status-dot vs-moving"></div>
+      </div>
+      <div class="vehicle-item">
+        <span class="vi-icon">🚗</span>
+        <div>
+          <div class="vi-plate">B 9012 GH</div>
+          <div class="vi-model">Toyota Avanza · DRV-03</div>
+          <div class="vi-fuel">⛽ 92% · 🅿 Parked</div>
+        </div>
+        <div class="vi-status-dot vs-parked"></div>
+      </div>
+      <div class="vehicle-item">
+        <span class="vi-icon">🚛</span>
+        <div>
+          <div class="vi-plate">B 3456 IJ</div>
+          <div class="vi-model">Daihatsu Gran Max · DRV-04</div>
+          <div class="vi-fuel">⛽ 12% · 📍 Moving</div>
+        </div>
+        <div class="vi-status-dot vs-moving"></div>
+      </div>
+      <div class="vehicle-item">
+        <span class="vi-icon">🔧</span>
+        <div>
+          <div class="vi-plate">B 7890 KL</div>
+          <div class="vi-model">Ford Ranger · DRV-05</div>
+          <div class="vi-fuel">⛽ 55% · 🔧 Maintenance</div>
+        </div>
+        <div class="vi-status-dot vs-maintenance"></div>
+      </div>
+      <div class="vehicle-item">
+        <span class="vi-icon">🚐</span>
+        <div>
+          <div class="vi-plate">D 2345 MN</div>
+          <div class="vi-model">Mitsubishi Colt · DRV-06</div>
+          <div class="vi-fuel">⛽ 67% · 📍 Moving</div>
+        </div>
+        <div class="vi-status-dot vs-moving"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Main content: map + detail -->
+  <div class="main">
+    <div class="main-tabs">
+      <button class="main-tab active">🗺️ Live Map</button>
+      <button class="main-tab">🚗 Vehicle Detail</button>
+      <button class="main-tab">🔧 Maintenance</button>
+      <button class="main-tab">👨‍✈️ Drivers</button>
+      <button class="main-tab">⛽ Fuel Log</button>
+    </div>
+    <div style="flex:1;display:flex;overflow:hidden;">
+      <div class="map-area">
+        <div class="map-bg">
+          <div class="map-grid"></div>
+          <!-- Roads -->
+          <div class="road-h" style="top:40%;left:0;right:0;"></div>
+          <div class="road-h" style="top:65%;left:0;right:0;"></div>
+          <div class="road-v" style="left:30%;top:0;bottom:0;"></div>
+          <div class="road-v" style="left:65%;top:0;bottom:0;"></div>
+          <!-- Vehicle markers -->
+          <div class="vehicle-marker" style="top:38%;left:22%;">
+            <div class="vm-icon">🚛</div>
+            <div class="vm-label moving">B 1234 CD</div>
+          </div>
+          <div class="vehicle-marker" style="top:55%;left:50%;">
+            <div class="vm-icon">🚐</div>
+            <div class="vm-label moving">D 5678 EF</div>
+          </div>
+          <div class="vehicle-marker" style="top:20%;left:70%;">
+            <div class="vm-icon">🚗</div>
+            <div class="vm-label parked">B 9012 GH</div>
+          </div>
+          <div class="vehicle-marker" style="top:65%;left:75%;">
+            <div class="vm-icon">🚛</div>
+            <div class="vm-label moving">B 3456 IJ</div>
+          </div>
+          <div class="vehicle-marker" style="top:75%;left:28%;">
+            <div class="vm-icon">🔧</div>
+            <div class="vm-label maintenance">B 7890 KL</div>
+          </div>
+          <div class="vehicle-marker" style="top:42%;left:58%;">
+            <div class="vm-icon">🚐</div>
+            <div class="vm-label moving">D 2345 MN</div>
+          </div>
+          <!-- Map filters -->
+          <div class="map-filter-overlay">
+            <div class="mf-chip moving">🟢 Moving (6)</div>
+            <div class="mf-chip parked">🔴 Parked (3)</div>
+            <div class="mf-chip maintenance">🟡 Maint. (1)</div>
+          </div>
+          <!-- Playback -->
+          <div class="playback-bar">
+            <span style="font-size:12px;color:#64748b;">History:</span>
+            <button class="pb-btn">⏮</button>
+            <button class="pb-btn">▶</button>
+            <button class="pb-btn">⏭</button>
+            <input type="range" class="pb-slider" min="0" max="100" value="75">
+            <span class="pb-time">Jan 15, 2025 · 14:30</span>
+          </div>
+        </div>
+      </div>
+      <!-- Vehicle detail panel -->
+      <div class="right-panel">
+        <div class="rp-vehicle-header">
+          <div class="rp-plate">B 1234 CD</div>
+          <div class="rp-model">Toyota Hiace 2022 · DRV-01 Ahmad Fauzi</div>
+          <div class="rp-status-row">
+            <div class="status-pill sp-moving">🟢 In Motion</div>
+            <span style="font-size:12px;color:#64748b;">72 km/h</span>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Vehicle Health</div>
+          <div class="gauge-row">
+            <div class="gauge">
+              <div class="gauge-label">Fuel Level</div>
+              <div class="gauge-val" style="color:#22c55e;">78%</div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:78%;background:#22c55e;"></div></div>
+            </div>
+            <div class="gauge">
+              <div class="gauge-label">Engine Temp</div>
+              <div class="gauge-val" style="color:#22c55e;">89°C</div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:60%;background:#22c55e;"></div></div>
+            </div>
+          </div>
+          <div class="info-row"><span class="info-label">Odometer</span><span class="info-value">45.280 KM</span></div>
+          <div class="info-row"><span class="info-label">Speed</span><span class="info-value">72 km/h</span></div>
+          <div class="info-row"><span class="info-label">Location</span><span class="info-value">Jl. Sudirman, Jakarta</span></div>
+          <div class="info-row"><span class="info-label">Driver</span><span class="info-value">Ahmad Fauzi ⭐ 4.8</span></div>
+          <div class="info-row"><span class="info-label">Route</span><span class="info-value">Jakarta → Bekasi</span></div>
+          <div class="info-row"><span class="info-label">Est. Arrival</span><span class="info-value">15:45 (45 min)</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Maintenance Timeline</div>
+          <div class="maint-item">
+            <div class="maint-dot maint-done"></div>
+            <div>
+              <div class="maint-date">10 Jan 2025</div>
+              <div class="maint-title">Oil Change ✅</div>
+            </div>
+          </div>
+          <div class="maint-item">
+            <div class="maint-dot maint-done"></div>
+            <div>
+              <div class="maint-date">15 Des 2024</div>
+              <div class="maint-title">Tire Rotation ✅</div>
+            </div>
+          </div>
+          <div class="maint-item">
+            <div class="maint-dot maint-upcoming"></div>
+            <div>
+              <div class="maint-date">15 Feb 2025 (upcoming)</div>
+              <div class="maint-title" style="color:#f59e0b;">⏰ Brake Inspection</div>
+            </div>
+          </div>
+          <div class="maint-item">
+            <div class="maint-dot maint-upcoming"></div>
+            <div>
+              <div class="maint-date">01 Mar 2025</div>
+              <div class="maint-title" style="color:#f59e0b;">⏰ Annual Service</div>
+            </div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Active Alerts</div>
+          <div class="alert-item alert-sev-med">
+            <span class="alert-icon">⛽</span>
+            <div class="alert-content">
+              <div class="alert-title">Low Fuel — B 3456 IJ</div>
+              <div class="alert-meta">Fuel at 12% · Nearest station: 5.2 km</div>
+            </div>
+            <div class="alert-time">2 min ago</div>
+          </div>
+          <div class="alert-item alert-sev-high">
+            <span class="alert-icon">🚨</span>
+            <div class="alert-content">
+              <div class="alert-title">Speeding — D 2345 MN</div>
+              <div class="alert-meta">95 km/h in 60 km/h zone · Jl. Gatot Subroto</div>
+            </div>
+            <div class="alert-time">5 min ago</div>
+          </div>
+          <div class="alert-item alert-sev-low">
+            <span class="alert-icon">📍</span>
+            <div class="alert-content">
+              <div class="alert-title">Geo-fence Exit — B 9012 GH</div>
+              <div class="alert-meta">Vehicle exited designated zone</div>
+            </div>
+            <div class="alert-time">12 min ago</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px;">
+          <button style="background:#f97316;border:none;color:white;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">📞 Contact Driver</button>
+          <button style="background:#1c1f26;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:9px;font-size:12px;cursor:pointer;">🗺️ Show Route</button>
+          <button style="background:#1c1f26;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:9px;font-size:12px;cursor:pointer;">🔧 Schedule Maintenance</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#2563eb; color:white; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:16px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:white; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; padding:12px; }
+  .new-btn { width:100%; background:#2563eb; color:white; border:none; border-radius:8px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:14px; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:#64748b; margin-bottom:2px; }
+  .nav-item:hover { background:#f1f5f9; }
+  .nav-item.active { background:#eff6ff; color:#2563eb; font-weight:600; }
+  .nav-section { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; padding:10px 12px 4px; }
+  .group-item { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:6px; font-size:12px; color:#64748b; cursor:pointer; }
+  .group-dot { width:8px; height:8px; border-radius:50%; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { padding:14px 20px; background:white; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .view-toggle { display:flex; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .view-btn { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .view-btn.active { background:#2563eb; color:white; }
+  .search-bar { display:flex; align-items:center; gap:8px; }
+  .search-input { border:1px solid #e2e8f0; border-radius:8px; padding:7px 12px; font-size:13px; width:220px; }
+  .filter-chip { background:#f1f5f9; border:1px solid #e2e8f0; color:#64748b; border-radius:999px; padding:4px 12px; font-size:12px; cursor:pointer; }
+  .filter-chip.active { background:#eff6ff; color:#2563eb; border-color:#93c5fd; }
+  .btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:500; }
+  .btn-primary { background:#2563eb; color:white; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  /* Table view */
+  .contact-table { flex:1; overflow-y:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th { padding:10px 16px; text-align:left; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; background:#f8fafc; border-bottom:1px solid #e2e8f0; position:sticky; top:0; }
+  td { padding:13px 16px; border-bottom:1px solid #f1f5f9; font-size:13px; }
+  tr:hover td { background:#f8fafc; cursor:pointer; }
+  tr.selected td { background:#eff6ff; }
+  .avatar { width:32px; height:32px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; }
+  .contact-name { font-weight:600; font-size:13px; }
+  .contact-company { font-size:12px; color:#64748b; }
+  .tag { display:inline-block; background:#f1f5f9; color:#475569; font-size:10px; padding:2px 6px; border-radius:4px; margin-right:2px; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .badge-customer { background:#dcfce7; color:#059669; }
+  .badge-lead { background:#fef3c7; color:#d97706; }
+  .badge-active { background:#dbeafe; color:#2563eb; }
+  .badge-inactive { background:#f1f5f9; color:#94a3b8; }
+  /* Kanban view */
+  .kanban { flex:1; overflow-x:auto; padding:16px; display:flex; gap:16px; }
+  .kanban-col { min-width:260px; background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; }
+  .kanban-header { padding:12px 14px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; }
+  .kanban-title { font-size:13px; font-weight:700; }
+  .kanban-count { background:#f1f5f9; color:#64748b; font-size:11px; padding:2px 8px; border-radius:999px; }
+  .kanban-cards { padding:10px; display:flex; flex-direction:column; gap:8px; }
+  .deal-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; cursor:pointer; }
+  .deal-card:hover { border-color:#93c5fd; }
+  .deal-name { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .deal-value { font-size:14px; font-weight:700; color:#2563eb; margin-bottom:6px; }
+  .deal-meta { font-size:11px; color:#94a3b8; display:flex; align-items:center; gap:6px; }
+  .prob-bar { height:3px; background:#e2e8f0; border-radius:2px; margin-top:6px; overflow:hidden; }
+  .prob-fill { height:100%; border-radius:2px; background:#10b981; }
+  /* Right panel */
+  .right-panel { width:300px; background:white; border-left:1px solid #e2e8f0; overflow-y:auto; }
+  .rp-header { padding:16px; border-bottom:1px solid #e2e8f0; text-align:center; }
+  .rp-avatar { width:56px; height:56px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; margin:0 auto 10px; }
+  .rp-name { font-size:16px; font-weight:700; }
+  .rp-company { font-size:13px; color:#64748b; }
+  .rp-status { display:inline-block; margin-top:6px; }
+  .rp-section { padding:14px 16px; border-bottom:1px solid #f1f5f9; }
+  .rp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+  .info-row { display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:8px; }
+  .info-icon { font-size:14px; color:#94a3b8; width:18px; }
+  .activity-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #f1f5f9; }
+  .activity-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .activity-icon.call { background:#dbeafe; }
+  .activity-icon.email { background:#dcfce7; }
+  .activity-icon.meet { background:#fef3c7; }
+  .activity-content { font-size:12px; }
+  .activity-time { font-size:11px; color:#94a3b8; }
+  .quick-actions { padding:14px 16px; display:flex; flex-wrap:wrap; gap:6px; }
+  .qa-btn { background:#f1f5f9; border:none; color:#475569; border-radius:8px; padding:7px 10px; font-size:12px; cursor:pointer; }
+  .qa-btn:hover { background:#eff6ff; color:#2563eb; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🤝 CRM — Customer Relationship Management</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span style="font-size:12px;opacity:.8;">120 Kontak · 34 Deal Aktif</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <button class="new-btn">＋ Tambah Kontak</button>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">👥 Kontak</div>
+    <div class="nav-item">💼 Deals</div>
+    <div class="nav-item">🏗️ Pipeline</div>
+    <div class="nav-item">📅 Aktivitas</div>
+    <div class="nav-item">📈 Laporan</div>
+    <div class="nav-section">Grup Kontak</div>
+    <div class="group-item"><div class="group-dot" style="background:#2563eb;"></div> VIP Clients</div>
+    <div class="group-item"><div class="group-dot" style="background:#10b981;"></div> Jakarta Area</div>
+    <div class="group-item"><div class="group-dot" style="background:#f59e0b;"></div> Prospek Baru</div>
+    <div class="group-item"><div class="group-dot" style="background:#8b5cf6;"></div> E-commerce</div>
+    <div class="nav-section">Favorit</div>
+    <div class="group-item">⭐ Budi Santoso</div>
+    <div class="group-item">⭐ PT ABC Corp</div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Kontak</h2>
+        <div class="view-toggle">
+          <button class="view-btn active">Tabel</button>
+          <button class="view-btn">Kanban</button>
+        </div>
+        <div class="filter-chip active">Semua</div>
+        <div class="filter-chip">Customer</div>
+        <div class="filter-chip">Lead</div>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" type="search" placeholder="🔍 Cari kontak, perusahaan...">
+        <button class="btn btn-primary">＋ Tambah</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="contact-table">
+        <table>
+          <thead>
+            <tr><th>Nama</th><th>Perusahaan</th><th>Email</th><th>Telepon</th><th>Status</th><th>Terakhir Aktif</th><th>Tags</th></tr>
+          </thead>
+          <tbody>
+            <tr class="selected">
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">BS</div><div><div class="contact-name">Budi Santoso</div><div class="contact-company">CEO</div></div></div></td>
+              <td>PT Maju Jaya</td><td>budi@maju.com</td><td>0812-3456-7890</td>
+              <td><span class="badge badge-customer">Customer</span></td><td>2 hari lalu</td>
+              <td><span class="tag">vip</span><span class="tag">jakarta</span></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#10b981;">SR</div><div><div class="contact-name">Siti Rahayu</div><div class="contact-company">CFO</div></div></div></td>
+              <td>PT Global Tech</td><td>siti@global.com</td><td>0813-9876-5432</td>
+              <td><span class="badge badge-lead">Lead</span></td><td>5 hari lalu</td>
+              <td><span class="tag">surabaya</span></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#8b5cf6;">AF</div><div><div class="contact-name">Ahmad Fauzi</div><div class="contact-company">IT Manager</div></div></div></td>
+              <td>PT Nusantara</td><td>ahmad@nusantara.id</td><td>0821-5555-4444</td>
+              <td><span class="badge badge-active">Active</span></td><td>Hari ini</td>
+              <td><span class="tag">bandung</span><span class="tag">tech</span></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#f59e0b;">DP</div><div><div class="contact-name">Dewi Puspita</div><div class="contact-company">Director</div></div></div></td>
+              <td>CV Sejahtera</td><td>dewi@sejahtera.co.id</td><td>0855-1122-3344</td>
+              <td><span class="badge badge-customer">Customer</span></td><td>1 minggu lalu</td>
+              <td><span class="tag">vip</span></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#ef4444;">RH</div><div><div class="contact-name">Rizky Hidayat</div><div class="contact-company">CTO</div></div></div></td>
+              <td>PT Startup Kreatif</td><td>rizky@startup.id</td><td>0877-8899-0011</td>
+              <td><span class="badge badge-lead">Lead</span></td><td>3 hari lalu</td>
+              <td><span class="tag">jakarta</span><span class="tag">startup</span></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#0891b2;">NW</div><div><div class="contact-name">Nina Wulandari</div><div class="contact-company">Operations</div></div></div></td>
+              <td>PT Retail Indonesia</td><td>nina@retail.id</td><td>0819-3344-5566</td>
+              <td><span class="badge badge-inactive">Inactive</span></td><td>2 minggu lalu</td>
+              <td><span class="tag">retail</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="right-panel">
+        <div class="rp-header">
+          <div class="rp-avatar">BS</div>
+          <div class="rp-name">Budi Santoso</div>
+          <div class="rp-company">CEO — PT Maju Jaya</div>
+          <span class="badge badge-customer rp-status">Customer</span>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Info Kontak</div>
+          <div class="info-row"><span class="info-icon">✉️</span> budi@maju.com</div>
+          <div class="info-row"><span class="info-icon">📞</span> 0812-3456-7890</div>
+          <div class="info-row"><span class="info-icon">🏢</span> PT Maju Jaya</div>
+          <div class="info-row"><span class="info-icon">📍</span> Jakarta, Indonesia</div>
+          <div class="info-row"><span class="info-icon">🌐</span> Referral</div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Deal Terkait</div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:13px;font-weight:600;">ERP Implementation</div>
+            <div style="font-size:14px;color:#2563eb;font-weight:700;margin:4px 0;">Rp 350 jt</div>
+            <div style="font-size:11px;color:#94a3b8;">Negosiasi · Prob: 70%</div>
+            <div class="prob-bar"><div class="prob-fill" style="width:70%;"></div></div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;">
+            <div style="font-size:13px;font-weight:600;">Maintenance Contract</div>
+            <div style="font-size:14px;color:#10b981;font-weight:700;margin:4px 0;">Rp 50 jt</div>
+            <div style="font-size:11px;color:#94a3b8;">Closed Won ✅</div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Timeline Aktivitas</div>
+          <div class="activity-item">
+            <div class="activity-icon call">📞</div>
+            <div><div class="activity-content">Diskusi kontrak maintenance</div><div class="activity-time">2 hari lalu · oleh Admin</div></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon email">✉️</div>
+            <div><div class="activity-content">Kirim proposal ERP</div><div class="activity-time">5 hari lalu · oleh Admin</div></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon meet">🤝</div>
+            <div><div class="activity-content">Meeting demo produk</div><div class="activity-time">2 minggu lalu</div></div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="qa-btn">📞 Log Panggilan</button>
+          <button class="qa-btn">✉️ Kirim Email</button>
+          <button class="qa-btn">💼 Buat Deal</button>
+          <button class="qa-btn">📝 Tambah Catatan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

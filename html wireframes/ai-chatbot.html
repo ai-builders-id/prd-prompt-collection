@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chatbot - Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e2e8f0; height: 100vh; display: flex; flex-direction: column; }
+  .topbar { background: #1a1a2e; border-bottom: 1px solid #2d2d4e; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 32px; height: 32px; background: linear-gradient(135deg, #4F46E5, #10b981); border-radius: 8px; }
+  .topbar h1 { font-size: 16px; font-weight: 600; color: #e2e8f0; }
+  .topbar-right { display: flex; gap: 8px; }
+  .badge { background: #4F46E5; color: white; font-size: 11px; padding: 2px 8px; border-radius: 999px; }
+  .app { display: flex; flex: 1; overflow: hidden; }
+  .sidebar { width: 260px; background: #13132a; border-right: 1px solid #2d2d4e; display: flex; flex-direction: column; }
+  .sidebar-section { padding: 16px; }
+  .sidebar-section h3 { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .new-chat-btn { width: 100%; background: #4F46E5; color: white; border: none; border-radius: 8px; padding: 10px 14px; font-size: 14px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .new-chat-btn:hover { background: #4338ca; }
+  .conv-item { padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: #94a3b8; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .conv-item:hover { background: #1e1e3a; color: #e2e8f0; }
+  .conv-item.active { background: #2d2d4e; color: #e2e8f0; }
+  .conv-dot { width: 8px; height: 8px; border-radius: 50%; background: #4F46E5; flex-shrink: 0; }
+  .divider { height: 1px; background: #2d2d4e; margin: 8px 16px; }
+  .kb-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: #94a3b8; }
+  .kb-item:hover { background: #1e1e3a; color: #e2e8f0; }
+  .kb-icon { width: 24px; height: 24px; border-radius: 6px; background: #1e1e3a; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; margin-left: auto; }
+  .status-indexed { background: #10b981; }
+  .status-processing { background: #f59e0b; }
+  .main { flex: 1; display: flex; flex-direction: column; background: #0f0f1a; }
+  .chat-header { padding: 16px 24px; border-bottom: 1px solid #2d2d4e; display: flex; align-items: center; justify-content: space-between; }
+  .chat-header h2 { font-size: 15px; font-weight: 600; }
+  .chat-meta { font-size: 12px; color: #6b7280; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+  .msg { display: flex; gap: 12px; max-width: 80%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+  .avatar.ai { background: linear-gradient(135deg, #4F46E5, #10b981); color: white; }
+  .avatar.user { background: #2d2d4e; color: #e2e8f0; }
+  .bubble { background: #1e1e3a; border-radius: 16px; padding: 12px 16px; font-size: 14px; line-height: 1.6; color: #e2e8f0; max-width: 100%; }
+  .bubble.user { background: #4F46E5; }
+  .bubble code { background: #0f0f1a; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+  .sources { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .source-pill { background: #2d2d4e; border: 1px solid #4F46E5; color: #818cf8; font-size: 11px; padding: 2px 8px; border-radius: 999px; cursor: pointer; }
+  .source-pill:hover { background: #4F46E5; color: white; }
+  .typing { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .typing-dots { display: flex; gap: 3px; }
+  .typing-dots span { width: 6px; height: 6px; background: #4F46E5; border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)} }
+  .chat-input-area { padding: 16px 24px; border-top: 1px solid #2d2d4e; }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; background: #1e1e3a; border: 1px solid #2d2d4e; border-radius: 12px; padding: 8px 12px; }
+  .attach-btn { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 18px; padding: 4px; }
+  .attach-btn:hover { color: #4F46E5; }
+  textarea { flex: 1; background: none; border: none; color: #e2e8f0; font-size: 14px; resize: none; outline: none; min-height: 24px; max-height: 120px; font-family: inherit; }
+  textarea::placeholder { color: #4b5563; }
+  .send-btn { background: #4F46E5; border: none; color: white; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .send-btn:hover { background: #4338ca; }
+  .tag { display: inline-block; background: #1e1e3a; color: #94a3b8; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo"></div>
+    <h1>AI Chatbot — Knowledge Assistant</h1>
+  </div>
+  <div class="topbar-right">
+    <span class="badge">Pro</span>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <button class="new-chat-btn">＋ New Conversation</button>
+      <h3>Recent Chats</h3>
+      <div class="conv-item active"><div class="conv-dot"></div> Company Policy Questions</div>
+      <div class="conv-item"><div class="conv-dot"></div> API v2 Spec Review</div>
+      <div class="conv-item"><div class="conv-dot"></div> Onboarding Checklist</div>
+      <div class="conv-item"><div class="conv-dot"></div> Technical Docs Summary</div>
+      <div class="conv-item"><div class="conv-dot"></div> Project Specs Discussion</div>
+    </div>
+    <div class="divider"></div>
+    <div class="sidebar-section">
+      <h3>Knowledge Base</h3>
+      <div class="kb-item">
+        <div class="kb-icon">📄</div>
+        <span>employee_handbook.pdf</span>
+        <div class="status-dot status-indexed" title="Indexed"></div>
+      </div>
+      <div class="kb-item">
+        <div class="kb-icon">📝</div>
+        <span>api_v2_spec.txt</span>
+        <div class="status-dot status-indexed" title="Indexed"></div>
+      </div>
+      <div class="kb-item">
+        <div class="kb-icon">📊</div>
+        <span>project_specs.docx</span>
+        <div class="status-dot status-processing" title="Processing"></div>
+      </div>
+      <div class="kb-item">
+        <div class="kb-icon">🔗</div>
+        <span>confluence.company.com</span>
+        <div class="status-dot status-indexed" title="Indexed"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sidebar-section">
+      <button style="width:100%;background:#1e1e3a;border:1px dashed #4b5563;color:#6b7280;border-radius:8px;padding:9px;font-size:13px;cursor:pointer;">＋ Add Knowledge Source</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="chat-header">
+      <div>
+        <h2>Company Policy Questions</h2>
+        <div class="chat-meta">3 knowledge sources active · 12 messages</div>
+      </div>
+      <button style="background:#1e1e3a;border:1px solid #2d2d4e;color:#94a3b8;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;">⚙ Settings</button>
+    </div>
+    <div class="chat-messages">
+      <div class="msg user">
+        <div class="avatar user">U</div>
+        <div class="bubble user">What is our remote work policy for international employees?</div>
+      </div>
+      <div class="msg">
+        <div class="avatar ai">AI</div>
+        <div>
+          <div class="bubble">
+            Based on the <code>employee_handbook.pdf</code>, international remote employees are subject to the following policy:<br><br>
+            <strong>Key Points:</strong><br>
+            • Employees must maintain core working hours (9 AM – 3 PM in their local timezone)<br>
+            • Quarterly in-person attendance is required at headquarters<br>
+            • All equipment is company-provided and must meet security standards<br>
+            • Tax implications are managed on a country-by-country basis<br><br>
+            For specific country exceptions, refer to the HR portal or contact hr@company.com.
+          </div>
+          <div class="sources">
+            <span class="source-pill">📄 employee_handbook.pdf · p.14</span>
+            <span class="source-pill">🔗 HR Portal</span>
+          </div>
+        </div>
+      </div>
+      <div class="msg user">
+        <div class="avatar user">U</div>
+        <div class="bubble user">Does the API v2 support webhook authentication?</div>
+      </div>
+      <div class="msg">
+        <div class="avatar ai">AI</div>
+        <div>
+          <div class="bubble">
+            Yes! According to <code>api_v2_spec.txt</code>, API v2 supports webhook authentication via HMAC-SHA256 signatures.<br><br>
+            Each webhook payload includes an <code>X-Signature-256</code> header. Verify it using your webhook secret to ensure authenticity.
+          </div>
+          <div class="sources">
+            <span class="source-pill">📝 api_v2_spec.txt · §3.2</span>
+          </div>
+        </div>
+      </div>
+      <div class="msg" style="align-items:center;">
+        <div class="avatar ai">AI</div>
+        <div class="typing">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          AI is thinking...
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div style="margin-bottom:8px;font-size:12px;color:#6b7280;">Active sources: <span class="tag">📄 employee_handbook.pdf</span><span class="tag">📝 api_v2_spec.txt</span></div>
+      <div class="input-row">
+        <button class="attach-btn" title="Attach knowledge">📎</button>
+        <textarea rows="1" placeholder="Ask anything — I'll search your knowledge base...">What are the performance review cycles?</textarea>
+        <button class="send-btn">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

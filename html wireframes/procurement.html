@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procurement - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#334155; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#1e293b; color:white; display:flex; flex-direction:column; padding:12px; }
+  .sidebar-stats { background:rgba(255,255,255,.08); border-radius:8px; padding:10px 12px; margin-bottom:12px; }
+  .ss-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .ss-label { color:rgba(255,255,255,.5); }
+  .ss-val { font-weight:700; }
+  .approval-badge { background:#f59e0b; color:#1c1917; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; margin-bottom:12px; text-align:center; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.15); color:white; font-weight:600; }
+  .nav-badge { margin-left:auto; background:#f59e0b; color:#1c1917; font-size:10px; padding:1px 5px; border-radius:999px; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .tab-bar { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .tab { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .tab.active { background:#334155; color:white; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#334155; color:white; }
+  .btn-secondary { background:white; border:1px solid #e2e8f0; color:#374151; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .main-content { flex:1; overflow-y:auto; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:16px 20px 0; }
+  .stat-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px; }
+  .stat-val { font-size:22px; font-weight:700; }
+  .stat-label { font-size:11px; color:#64748b; margin-top:2px; }
+  .list-section { padding:14px 20px; }
+  .po-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; margin-bottom:8px; cursor:pointer; transition:border-color .15s; }
+  .po-card:hover { border-color:#94a3b8; }
+  .po-card.selected { border-color:#334155; background:#f8fafc; }
+  .po-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .po-number { font-family:monospace; font-size:13px; font-weight:700; color:#334155; }
+  .po-vendor { font-size:13px; font-weight:600; }
+  .po-amount { font-size:16px; font-weight:800; }
+  .po-row2 { display:flex; align-items:center; gap:10px; font-size:12px; color:#64748b; }
+  .status-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+  .sb-draft { background:#f1f5f9; color:#64748b; }
+  .sb-pending { background:#fef3c7; color:#d97706; }
+  .sb-approved { background:#d1fae5; color:#059669; }
+  .sb-rejected { background:#fee2e2; color:#dc2626; }
+  .sb-ordered { background:#dbeafe; color:#2563eb; }
+  .sb-completed { background:#f0fdf4; color:#059669; }
+  .po-actions { display:flex; gap:4px; margin-left:auto; opacity:0; }
+  .po-card:hover .po-actions { opacity:1; }
+  .action-btn { padding:4px 10px; border-radius:6px; border:none; font-size:11px; font-weight:700; cursor:pointer; }
+  .btn-approve { background:#d1fae5; color:#059669; }
+  .btn-reject { background:#fee2e2; color:#dc2626; }
+  .btn-view { background:#f1f5f9; color:#374151; }
+  /* Budget bars */
+  .budget-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; margin-bottom:8px; }
+  .budget-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .budget-dept { font-size:13px; font-weight:700; }
+  .budget-amounts { font-size:12px; color:#64748b; }
+  .budget-bar-bg { height:10px; background:#f1f5f9; border-radius:999px; overflow:hidden; }
+  .budget-bar-fill { height:100%; border-radius:999px; }
+  .budget-meta { display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-top:4px; }
+  /* Right panel */
+  .right-panel { width:340px; background:white; border-left:1px solid #e2e8f0; overflow-y:auto; }
+  .rp-header { padding:16px; border-bottom:1px solid #e2e8f0; }
+  .rp-po-num { font-size:11px; font-weight:700; color:#334155; font-family:monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .rp-vendor { font-size:16px; font-weight:700; margin-top:4px; }
+  .rp-status { margin-top:8px; }
+  .rp-section { padding:12px 16px; border-bottom:1px solid #f1f5f9; }
+  .rp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .info-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+  .info-label { color:#94a3b8; }
+  .info-value { color:#1e293b; font-weight:500; }
+  /* Items table */
+  .items-table { width:100%; border-collapse:collapse; }
+  .items-table th { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; text-align:left; padding:6px 10px; background:#f8fafc; border-bottom:1px solid #e2e8f0; }
+  .items-table td { font-size:12px; padding:8px 10px; border-bottom:1px solid #f8fafc; }
+  /* Approval flow */
+  .approval-flow { display:flex; gap:0; align-items:center; padding:12px 0; }
+  .approval-step { display:flex; flex-direction:column; align-items:center; }
+  .approval-circle { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+  .ac-done { background:#d1fae5; color:#059669; }
+  .ac-current { background:#fef3c7; color:#d97706; }
+  .ac-pending { background:#f1f5f9; color:#94a3b8; }
+  .approval-name { font-size:10px; color:#64748b; margin-top:4px; text-align:center; }
+  .approval-line { flex:1; height:2px; background:#e2e8f0; margin:0 4px; margin-bottom:16px; }
+  .approval-line.done { background:#d1fae5; }
+  .rp-actions { padding:14px 16px; display:flex; flex-wrap:wrap; gap:6px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>📋 Procurement & Spend Management</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="search" placeholder="🔍 Cari PO, vendor..." style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 12px;color:white;font-size:13px;width:200px;">
+    <span style="font-size:12px;opacity:.8;">6 PO Pending · 3 Perlu Persetujuan</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-stats">
+      <div class="ss-row"><span class="ss-label">PO Bulan Ini</span><span class="ss-val">24</span></div>
+      <div class="ss-row"><span class="ss-label">Total Spend</span><span class="ss-val" style="color:#fbbf24;">Rp 500 jt</span></div>
+      <div class="ss-row"><span class="ss-label">Vendor Aktif</span><span class="ss-val">24</span></div>
+    </div>
+    <div class="approval-badge">⏳ 3 Perlu Persetujuan!</div>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">📋 Purchase Orders <span class="nav-badge">6</span></div>
+    <div class="nav-item">🏭 Vendor</div>
+    <div class="nav-item">💰 Anggaran</div>
+    <div class="nav-item">✅ Persetujuan <span class="nav-badge">3</span></div>
+    <div class="nav-item">📈 Laporan</div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Purchase Orders</h2>
+        <div class="tab-bar">
+          <button class="tab active">Semua</button>
+          <button class="tab">Pending (6)</button>
+          <button class="tab">Draft (4)</button>
+          <button class="tab">Selesai (14)</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <select style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:13px;background:white;"><option>Semua Dept.</option><option>Engineering</option><option>Marketing</option></select>
+        <button class="btn btn-secondary">Filter</button>
+        <button class="btn btn-primary">＋ Buat PO</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="main-content">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-val" style="color:#d97706;">6</div><div class="stat-label">PO Pending</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#dc2626;">3</div><div class="stat-label">Perlu Disetujui</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#334155;">Rp 500 jt</div><div class="stat-label">Total Spend Jan</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#059669;">24</div><div class="stat-label">Vendor Aktif</div></div>
+        </div>
+        <div class="list-section">
+          <div style="font-size:13px;font-weight:700;color:#64748b;margin-bottom:10px;">Purchase Orders</div>
+          <div class="po-card selected">
+            <div class="po-row1">
+              <div>
+                <div class="po-number">PO-2025-001</div>
+                <div class="po-vendor">PT Sumber Makmur</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="po-amount">Rp 49.950.000</div>
+                <span class="status-badge sb-pending">⏳ Pending</span>
+              </div>
+            </div>
+            <div class="po-row2">
+              <span>🏢 Engineering</span>
+              <span>👤 Budi Santoso</span>
+              <span>📅 15 Jan 2025</span>
+              <div class="po-actions">
+                <button class="action-btn btn-approve">✓ Setujui</button>
+                <button class="action-btn btn-reject">✗ Tolak</button>
+                <button class="action-btn btn-view">Lihat</button>
+              </div>
+            </div>
+          </div>
+          <div class="po-card">
+            <div class="po-row1">
+              <div>
+                <div class="po-number">PO-2025-002</div>
+                <div class="po-vendor">CV Elektronik Maju</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="po-amount">Rp 22.500.000</div>
+                <span class="status-badge sb-approved">✅ Disetujui</span>
+              </div>
+            </div>
+            <div class="po-row2">
+              <span>🏢 IT</span>
+              <span>👤 Ahmad Fauzi</span>
+              <span>📅 10 Jan 2025</span>
+              <div class="po-actions">
+                <button class="action-btn btn-view">Lihat</button>
+              </div>
+            </div>
+          </div>
+          <div class="po-card">
+            <div class="po-row1">
+              <div>
+                <div class="po-number">PO-2025-003</div>
+                <div class="po-vendor">PT Kertas Prima</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="po-amount">Rp 4.500.000</div>
+                <span class="status-badge sb-draft">📝 Draft</span>
+              </div>
+            </div>
+            <div class="po-row2">
+              <span>🏢 Admin</span>
+              <span>👤 Nina Sari</span>
+              <span>📅 12 Jan 2025</span>
+              <div class="po-actions">
+                <button class="action-btn btn-approve">Submit</button>
+                <button class="action-btn btn-view">Edit</button>
+              </div>
+            </div>
+          </div>
+          <div class="po-card">
+            <div class="po-row1">
+              <div>
+                <div class="po-number">PO-2025-004</div>
+                <div class="po-vendor">PT Teknologi Nusantara</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="po-amount">Rp 135.000.000</div>
+                <span class="status-badge sb-pending">⏳ Pending</span>
+              </div>
+            </div>
+            <div class="po-row2">
+              <span>🏢 Engineering</span>
+              <span>👤 Budi Santoso</span>
+              <span>📅 08 Jan 2025</span>
+              <div class="po-actions">
+                <button class="action-btn btn-approve">✓ Setujui</button>
+                <button class="action-btn btn-reject">✗ Tolak</button>
+                <button class="action-btn btn-view">Lihat</button>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#64748b;margin:20px 0 10px;">Anggaran Departemen — Jan 2025</div>
+          <div class="budget-card">
+            <div class="budget-header">
+              <div class="budget-dept">Engineering</div>
+              <div class="budget-amounts">Rp 145 jt / Rp 200 jt</div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:72%;background:#334155;"></div></div>
+            <div class="budget-meta"><span>Terpakai: 72%</span><span>Sisa: Rp 55 jt</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header">
+              <div class="budget-dept">Marketing</div>
+              <div class="budget-amounts">Rp 88 jt / Rp 100 jt</div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:88%;background:#d97706;"></div></div>
+            <div class="budget-meta"><span>Terpakai: 88%</span><span>⚠️ Sisa: Rp 12 jt</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header">
+              <div class="budget-dept">IT</div>
+              <div class="budget-amounts">Rp 45 jt / Rp 150 jt</div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:30%;background:#059669;"></div></div>
+            <div class="budget-meta"><span>Terpakai: 30%</span><span>✓ Sisa: Rp 105 jt</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="rp-header">
+          <div class="rp-po-num">PO-2025-001</div>
+          <div class="rp-vendor">PT Sumber Makmur</div>
+          <div class="rp-status"><span class="status-badge sb-pending">⏳ Pending Approval</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Informasi PO</div>
+          <div class="info-row"><span class="info-label">Departemen</span><span class="info-value">Engineering</span></div>
+          <div class="info-row"><span class="info-label">Diminta oleh</span><span class="info-value">Budi Santoso</span></div>
+          <div class="info-row"><span class="info-label">Tanggal</span><span class="info-value">15 Jan 2025</span></div>
+          <div class="info-row"><span class="info-label">Est. Delivery</span><span class="info-value">15 Feb 2025</span></div>
+          <div class="info-row"><span class="info-label">Catatan</span><span class="info-value" style="color:#dc2626;">Urgent — server baru</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Item Pesanan</div>
+          <table class="items-table">
+            <thead>
+              <tr><th>Item</th><th>Qty</th><th>Satuan</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Server Dell PowerEdge R750</td>
+                <td>2</td>
+                <td>Rp 15 jt</td>
+                <td>Rp 30 jt</td>
+              </tr>
+              <tr>
+                <td>RAM 32GB DDR5</td>
+                <td>10</td>
+                <td>Rp 800rb</td>
+                <td>Rp 8 jt</td>
+              </tr>
+              <tr>
+                <td>SSD 1TB</td>
+                <td>5</td>
+                <td>Rp 1,4 jt</td>
+                <td>Rp 7 jt</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="border-top:2px solid #e2e8f0;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
+            <div class="info-row"><span>Subtotal</span><span style="font-weight:600;">Rp 45.000.000</span></div>
+            <div class="info-row"><span>PPN 11%</span><span style="font-weight:600;">Rp 4.950.000</span></div>
+            <div class="info-row" style="font-size:15px;font-weight:800;"><span>Total</span><span style="color:#334155;">Rp 49.950.000</span></div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Alur Persetujuan</div>
+          <div class="approval-flow">
+            <div class="approval-step">
+              <div class="approval-circle ac-done">✓</div>
+              <div class="approval-name">Budi<br>(Requester)</div>
+            </div>
+            <div class="approval-line done"></div>
+            <div class="approval-step">
+              <div class="approval-circle ac-current">⏳</div>
+              <div class="approval-name">Siti<br>(Manager)</div>
+            </div>
+            <div class="approval-line"></div>
+            <div class="approval-step">
+              <div class="approval-circle ac-pending">3</div>
+              <div class="approval-name">CFO<br>(Finance)</div>
+            </div>
+          </div>
+          <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px;font-size:12px;color:#92400e;">
+            Menunggu persetujuan Siti (Manager Engineering)
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Vendor: PT Sumber Makmur</div>
+          <div class="info-row"><span class="info-label">Kontak</span><span class="info-value">Budi H. · 021-1234567</span></div>
+          <div class="info-row"><span class="info-label">Rating</span><span class="info-value">⭐ 4.5/5.0</span></div>
+          <div class="info-row"><span class="info-label">Total PO</span><span class="info-value">24 PO · Rp 1,2 M</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value" style="color:#059669;">✓ Aktif</span></div>
+        </div>
+        <div class="rp-actions">
+          <button style="flex:1;background:#d1fae5;border:none;color:#059669;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">✓ Setujui PO</button>
+          <button style="flex:1;background:#fee2e2;border:none;color:#dc2626;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">✗ Tolak</button>
+          <button style="width:100%;background:#f1f5f9;border:none;color:#374151;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;margin-top:4px;">✏️ Edit PO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

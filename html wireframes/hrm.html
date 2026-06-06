@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRM - Human Resource Management - Wireframe</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f8fafc; color:#1e293b; height:100vh; display:flex; flex-direction:column; font-size:14px; }
+  .topbar { background:#4f46e5; color:white; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar h1 { font-size:15px; font-weight:700; }
+  .app { display:flex; flex:1; overflow:hidden; }
+  .sidebar { width:220px; background:#3730a3; color:white; display:flex; flex-direction:column; padding:12px; }
+  .sidebar-stats { background:rgba(255,255,255,.1); border-radius:8px; padding:10px 12px; margin-bottom:12px; }
+  .ss-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .ss-label { color:rgba(255,255,255,.6); }
+  .ss-val { font-weight:700; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,.7); margin-bottom:2px; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:white; }
+  .nav-item.active { background:rgba(255,255,255,.2); color:white; font-weight:600; }
+  .nav-badge { margin-left:auto; background:#f9a8d4; color:#9d174d; font-size:10px; padding:1px 5px; border-radius:999px; }
+  .dept-list { margin-top:8px; }
+  .dept-title { font-size:10px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; padding:6px 12px; }
+  .dept-item { display:flex; align-items:center; gap:6px; padding:5px 12px; font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; }
+  .dept-item:hover { color:white; }
+  .dept-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .toolbar { background:white; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar h2 { font-size:15px; font-weight:700; }
+  .tab-bar { display:flex; gap:0; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .tab { padding:6px 14px; font-size:12px; cursor:pointer; border:none; background:none; color:#64748b; }
+  .tab.active { background:#4f46e5; color:white; }
+  .btn { padding:7px 14px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-primary { background:#4f46e5; color:white; }
+  .btn-secondary { background:white; border:1px solid #e2e8f0; color:#374151; }
+  .content { flex:1; display:flex; overflow:hidden; }
+  .employee-list { flex:1; overflow-y:auto; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:16px 20px 0; }
+  .stat-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px; }
+  .stat-val { font-size:22px; font-weight:700; }
+  .stat-label { font-size:11px; color:#64748b; margin-top:2px; }
+  .list-section { padding:14px 20px; }
+  .emp-card { background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:border-color .15s; }
+  .emp-card:hover { border-color:#a5b4fc; }
+  .emp-card.selected { border-color:#4f46e5; background:#f5f3ff; }
+  .emp-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; color:white; flex-shrink:0; }
+  .emp-name { font-size:14px; font-weight:700; }
+  .emp-role { font-size:12px; color:#64748b; margin-top:2px; }
+  .emp-meta { font-size:11px; color:#94a3b8; margin-top:4px; display:flex; gap:10px; }
+  .status-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .sb-active { background:#ede9fe; color:#5b21b6; }
+  .sb-probation { background:#fef3c7; color:#d97706; }
+  .sb-resigned { background:#fee2e2; color:#dc2626; }
+  .emp-actions { display:flex; gap:4px; opacity:0; margin-left:auto; }
+  .emp-card:hover .emp-actions { opacity:1; }
+  .action-btn { background:#f1f5f9; border:none; border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; }
+  /* Attendance calendar */
+  .calendar-card { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px; }
+  .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .cal-title { font-size:15px; font-weight:700; }
+  .cal-nav { display:flex; gap:4px; }
+  .cal-btn { background:#f1f5f9; border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:13px; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-day-header { text-align:center; font-size:11px; font-weight:700; color:#94a3b8; padding:4px; }
+  .cal-day { aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer; position:relative; }
+  .cal-day:hover { background:#f1f5f9; }
+  .cal-day.empty { pointer-events:none; }
+  .att-present { background:#d1fae5; color:#059669; font-weight:700; }
+  .att-late { background:#fef3c7; color:#d97706; font-weight:700; }
+  .att-absent { background:#fee2e2; color:#dc2626; font-weight:700; }
+  .att-holiday { background:#f1f5f9; color:#94a3b8; }
+  /* Right panel */
+  .right-panel { width:300px; background:white; border-left:1px solid #e2e8f0; overflow-y:auto; }
+  .rp-header { padding:16px; border-bottom:1px solid #e2e8f0; text-align:center; }
+  .rp-avatar { width:60px; height:60px; border-radius:50%; background:#4f46e5; color:white; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; margin:0 auto 10px; }
+  .rp-name { font-size:16px; font-weight:700; }
+  .rp-role { font-size:13px; color:#64748b; }
+  .rp-nik { font-size:11px; color:#94a3b8; font-family:monospace; margin-top:4px; }
+  .rp-section { padding:12px 16px; border-bottom:1px solid #f1f5f9; }
+  .rp-section-title { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .info-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+  .info-label { color:#94a3b8; }
+  .info-value { color:#1e293b; font-weight:500; }
+  .leave-bar { margin-bottom:8px; }
+  .leave-label-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .leave-bar-bg { height:8px; background:#f1f5f9; border-radius:999px; overflow:hidden; }
+  .leave-bar-fill { height:100%; border-radius:999px; }
+  .payroll-row { display:flex; justify-content:space-between; font-size:13px; padding:7px 0; border-bottom:1px solid #f8fafc; }
+  .payroll-label { color:#64748b; }
+  .payroll-credit { color:#059669; font-weight:600; }
+  .payroll-debit { color:#dc2626; font-weight:600; }
+  .payroll-total { font-weight:700; font-size:15px; }
+  .att-legend { display:flex; gap:8px; flex-wrap:wrap; font-size:11px; margin-top:8px; }
+  .legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:4px; }
+  .leave-req-card { background:#ede9fe; border:1px solid #c4b5fd; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+  .leave-req-title { font-size:13px; font-weight:700; margin-bottom:2px; }
+  .leave-req-meta { font-size:12px; color:#64748b; }
+  .leave-req-actions { display:flex; gap:6px; margin-top:8px; }
+  .qa-btn { flex:1; border:none; border-radius:6px; padding:6px; font-size:12px; font-weight:600; cursor:pointer; }
+  .qa-approve { background:#d1fae5; color:#059669; }
+  .qa-reject { background:#fee2e2; color:#dc2626; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>👥 HRM — Human Resource Management</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="search" placeholder="🔍 Cari karyawan..." style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:white;font-size:13px;width:200px;">
+    <span style="font-size:12px;opacity:.8;">120 Karyawan · 5 Cuti Pending</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;">👤</div>
+  </div>
+</div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-stats">
+      <div class="ss-row"><span class="ss-label">Total Karyawan</span><span class="ss-val">120</span></div>
+      <div class="ss-row"><span class="ss-label">Hadir Hari Ini</span><span class="ss-val" style="color:#4ade80;">108</span></div>
+      <div class="ss-row"><span class="ss-label">Cuti Pending</span><span class="ss-val" style="color:#fbbf24;">5</span></div>
+      <div class="ss-row"><span class="ss-label">Masa Probation</span><span class="ss-val" style="color:#c084fc;">8</span></div>
+    </div>
+    <div class="nav-item active">📊 Dashboard</div>
+    <div class="nav-item">👤 Karyawan</div>
+    <div class="nav-item">🗓️ Kehadiran</div>
+    <div class="nav-item">🏖️ Cuti <span class="nav-badge">5</span></div>
+    <div class="nav-item">💰 Penggajian</div>
+    <div class="nav-item">📈 Laporan</div>
+    <div class="dept-list">
+      <div class="dept-title">Departemen</div>
+      <div class="dept-item"><div class="dept-dot"></div> Engineering (35)</div>
+      <div class="dept-item"><div class="dept-dot"></div> Marketing (22)</div>
+      <div class="dept-item"><div class="dept-dot"></div> Finance (15)</div>
+      <div class="dept-item"><div class="dept-dot"></div> Operations (28)</div>
+      <div class="dept-item"><div class="dept-dot"></div> HR & Legal (20)</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Data Karyawan</h2>
+        <div class="tab-bar">
+          <button class="tab active">Karyawan</button>
+          <button class="tab">Kehadiran</button>
+          <button class="tab">Cuti</button>
+          <button class="tab">Penggajian</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <select style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:13px;background:white;"><option>Semua Dept.</option><option>Engineering</option><option>Marketing</option></select>
+        <button class="btn btn-secondary">Filter</button>
+        <button class="btn btn-primary">＋ Tambah Karyawan</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="employee-list">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-val">120</div><div class="stat-label">Total Karyawan</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#059669;">108</div><div class="stat-label">Hadir Hari Ini</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#d97706;">5</div><div class="stat-label">Cuti Menunggu</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#4f46e5;">Rp 750 jt</div><div class="stat-label">Payroll Jan 2025</div></div>
+        </div>
+        <div class="list-section">
+          <!-- Leave requests on top -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:#64748b;">🏖️ Permohonan Cuti Pending</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="leave-req-card">
+                <div class="leave-req-title">Cuti Tahunan — Budi Santoso</div>
+                <div class="leave-req-meta">20 Jan – 25 Jan 2025 (6 hari)</div>
+                <div class="leave-req-meta" style="color:#94a3b8;font-size:11px;">Alasan: Liburan keluarga</div>
+                <div class="leave-req-actions">
+                  <button class="qa-btn qa-approve">✓ Setujui</button>
+                  <button class="qa-btn qa-reject">✗ Tolak</button>
+                </div>
+              </div>
+              <div class="leave-req-card">
+                <div class="leave-req-title">Sakit — Siti Rahayu</div>
+                <div class="leave-req-meta">18 Jan 2025 (1 hari)</div>
+                <div class="leave-req-meta" style="color:#94a3b8;font-size:11px;">Dengan surat dokter</div>
+                <div class="leave-req-actions">
+                  <button class="qa-btn qa-approve">✓ Setujui</button>
+                  <button class="qa-btn qa-reject">✗ Tolak</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Employee list -->
+          <div class="emp-card selected">
+            <div class="emp-avatar" style="background:#4f46e5;">BS</div>
+            <div style="flex:1;">
+              <div class="emp-name">Budi Santoso</div>
+              <div class="emp-role">🏢 Engineering — Senior Developer</div>
+              <div class="emp-meta">
+                <span>NIK: 12710012345</span>
+                <span>📅 Bergabung: 12 Jun 2022</span>
+                <span class="status-badge sb-active">Aktif</span>
+              </div>
+            </div>
+            <div class="emp-actions">
+              <button class="action-btn">👤 Profil</button>
+              <button class="action-btn">🏖️ Cuti</button>
+              <button class="action-btn">💰 Slip</button>
+            </div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-avatar" style="background:#ec4899;">SR</div>
+            <div style="flex:1;">
+              <div class="emp-name">Siti Rahayu</div>
+              <div class="emp-role">🏢 Marketing — Marketing Manager</div>
+              <div class="emp-meta">
+                <span>NIK: 12710012346</span>
+                <span>📅 Bergabung: 01 Mar 2021</span>
+                <span class="status-badge sb-active">Aktif</span>
+              </div>
+            </div>
+            <div class="emp-actions">
+              <button class="action-btn">👤 Profil</button>
+              <button class="action-btn">🏖️ Cuti</button>
+              <button class="action-btn">💰 Slip</button>
+            </div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-avatar" style="background:#f59e0b;">AF</div>
+            <div style="flex:1;">
+              <div class="emp-name">Ahmad Fauzi</div>
+              <div class="emp-role">🏢 Operations — IT Support</div>
+              <div class="emp-meta">
+                <span>NIK: 12710012347</span>
+                <span>📅 Bergabung: 15 Agu 2024</span>
+                <span class="status-badge sb-probation">Probation</span>
+              </div>
+            </div>
+            <div class="emp-actions">
+              <button class="action-btn">👤 Profil</button>
+              <button class="action-btn">🏖️ Cuti</button>
+              <button class="action-btn">💰 Slip</button>
+            </div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-avatar" style="background:#059669;">DP</div>
+            <div style="flex:1;">
+              <div class="emp-name">Dewi Puspita</div>
+              <div class="emp-role">🏢 Finance — Finance Analyst</div>
+              <div class="emp-meta">
+                <span>NIK: 12710012348</span>
+                <span>📅 Bergabung: 03 Jan 2020</span>
+                <span class="status-badge sb-active">Aktif</span>
+              </div>
+            </div>
+            <div class="emp-actions">
+              <button class="action-btn">👤 Profil</button>
+              <button class="action-btn">🏖️ Cuti</button>
+              <button class="action-btn">💰 Slip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="rp-header">
+          <div class="rp-avatar">BS</div>
+          <div class="rp-name">Budi Santoso</div>
+          <div class="rp-role">Senior Developer · Engineering</div>
+          <div class="rp-nik">NIK: 12710012345</div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Informasi Personal</div>
+          <div class="info-row"><span class="info-label">Email</span><span class="info-value">budi@company.com</span></div>
+          <div class="info-row"><span class="info-label">Telepon</span><span class="info-value">0812-3456-7890</span></div>
+          <div class="info-row"><span class="info-label">Tgl Lahir</span><span class="info-value">15 Mar 1990</span></div>
+          <div class="info-row"><span class="info-label">Bergabung</span><span class="info-value">12 Jun 2022</span></div>
+          <div class="info-row"><span class="info-label">Bank</span><span class="info-value">BCA · 1234567890</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Sisa Cuti</div>
+          <div class="leave-bar">
+            <div class="leave-label-row"><span>Tahunan</span><span style="color:#4f46e5;font-weight:600;">7/12 hari</span></div>
+            <div class="leave-bar-bg"><div class="leave-bar-fill" style="width:42%;background:#a78bfa;"></div></div>
+          </div>
+          <div class="leave-bar">
+            <div class="leave-label-row"><span>Sakit</span><span style="color:#059669;font-weight:600;">13/14 hari</span></div>
+            <div class="leave-bar-bg"><div class="leave-bar-fill" style="width:93%;background:#34d399;"></div></div>
+          </div>
+          <div class="leave-bar">
+            <div class="leave-label-row"><span>Ibadah</span><span style="color:#d97706;font-weight:600;">2/4 hari</span></div>
+            <div class="leave-bar-bg"><div class="leave-bar-fill" style="width:50%;background:#fbbf24;"></div></div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Kehadiran Januari 2025</div>
+          <div class="calendar-card" style="padding:10px;border:none;">
+            <div class="cal-grid">
+              <div class="cal-day-header">S</div><div class="cal-day-header">S</div><div class="cal-day-header">R</div><div class="cal-day-header">K</div><div class="cal-day-header">J</div><div class="cal-day-header">S</div><div class="cal-day-header">M</div>
+              <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day att-present">1</div><div class="cal-day att-present">2</div><div class="cal-day att-present">3</div><div class="cal-day att-holiday">4</div><div class="cal-day att-holiday">5</div>
+              <div class="cal-day att-present">6</div><div class="cal-day att-late">7</div><div class="cal-day att-present">8</div><div class="cal-day att-present">9</div><div class="cal-day att-present">10</div><div class="cal-day att-holiday">11</div><div class="cal-day att-holiday">12</div>
+              <div class="cal-day att-present">13</div><div class="cal-day att-present">14</div><div class="cal-day att-absent">15</div><div class="cal-day att-present">16</div><div class="cal-day att-present">17</div><div class="cal-day att-holiday">18</div><div class="cal-day att-holiday">19</div>
+            </div>
+            <div class="att-legend">
+              <span><span class="legend-dot" style="background:#d1fae5;"></span>Hadir</span>
+              <span><span class="legend-dot" style="background:#fef3c7;"></span>Terlambat</span>
+              <span><span class="legend-dot" style="background:#fee2e2;"></span>Absen</span>
+              <span><span class="legend-dot" style="background:#f1f5f9;"></span>Libur</span>
+            </div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-section-title">Slip Gaji — Januari 2025</div>
+          <div class="payroll-row"><span class="payroll-label">Gaji Pokok</span><span class="payroll-credit">Rp 15.000.000</span></div>
+          <div class="payroll-row"><span class="payroll-label">Transport</span><span class="payroll-credit">+ Rp 500.000</span></div>
+          <div class="payroll-row"><span class="payroll-label">Makan</span><span class="payroll-credit">+ Rp 500.000</span></div>
+          <div class="payroll-row"><span class="payroll-label">Overtime</span><span class="payroll-credit">+ Rp 750.000</span></div>
+          <div class="payroll-row"><span class="payroll-label">BPJS</span><span class="payroll-debit">- Rp 300.000</span></div>
+          <div class="payroll-row"><span class="payroll-label">PPh21</span><span class="payroll-debit">- Rp 450.000</span></div>
+          <div class="payroll-row payroll-total"><span>Gaji Bersih</span><span style="color:#4f46e5;">Rp 16.000.000</span></div>
+          <div style="font-size:11px;color:#059669;margin-top:6px;">✅ Dibayarkan: 28 Jan 2025</div>
+        </div>
+        <div style="padding:14px 16px;display:flex;flex-wrap:wrap;gap:6px;">
+          <button style="background:#4f46e5;color:white;border:none;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;">✏️ Edit</button>
+          <button style="background:#f1f5f9;border:none;color:#374151;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;">🏖️ Ajukan Cuti</button>
+          <button style="background:#f1f5f9;border:none;color:#374151;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;">💰 Lihat Payslip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
